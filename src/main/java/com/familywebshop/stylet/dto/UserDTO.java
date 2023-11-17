@@ -6,8 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serial;
-import java.io.Serializable;
 
 @EqualsAndHashCode
 @Getter
@@ -18,5 +16,4 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private String password;
-    private Role role;
 }

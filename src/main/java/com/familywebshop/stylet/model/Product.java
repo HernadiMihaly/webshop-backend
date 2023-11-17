@@ -23,7 +23,6 @@ public class Product {
     private Double price;
     private String description;
     private String materials;
-    private String imageURL;
 
     @ManyToOne
     @JoinColumn(name = "category_id")

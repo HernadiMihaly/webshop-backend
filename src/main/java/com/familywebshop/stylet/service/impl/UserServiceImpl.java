@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
                 .firstName(userDTO.getFirstName())
                 .lastName(userDTO.getLastName())
                 .password(userDTO.getPassword())
-                .role(userDTO.getRole())
+                .role(Role.ROLE_USER)
                 .build();
     }
 
