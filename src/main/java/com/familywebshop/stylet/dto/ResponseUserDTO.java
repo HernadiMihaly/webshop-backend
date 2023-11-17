@@ -11,6 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ResponseUserDTO {
     private String email;
+
     private String firstName;
+
     private String lastName;
 }
