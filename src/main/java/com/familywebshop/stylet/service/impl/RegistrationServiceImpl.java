@@ -1,6 +1,6 @@
 package com.familywebshop.stylet.service.impl;
 
-import com.familywebshop.stylet.dto.UserDTO;
+import com.familywebshop.stylet.dto.RequestUserDTO;
 import com.familywebshop.stylet.service.RegistrationService;
 import com.familywebshop.stylet.service.UserService;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -16,9 +16,9 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
-    public void register(UserDTO userDTO) {
-        if (EmailValidator.getInstance().isValid(userDTO.getEmail())) {
-            userService.signUp(userDTO);
+    public void register(RequestUserDTO requestUserDTO) {
+        if (EmailValidator.getInstance().isValid(requestUserDTO.getEmail())) {
+            userService.signUp(requestUserDTO);
         } else throw new IllegalStateException("Email is not valid!");
     }
 }

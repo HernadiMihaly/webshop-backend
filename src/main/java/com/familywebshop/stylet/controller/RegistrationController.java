@@ -1,8 +1,7 @@
 package com.familywebshop.stylet.controller;
 
-import com.familywebshop.stylet.dto.UserDTO;
+import com.familywebshop.stylet.dto.RequestUserDTO;
 import com.familywebshop.stylet.service.RegistrationService;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,8 +15,8 @@ public class RegistrationController {
     }
 
     @PostMapping(path = "/identity/register")
-    public String register(@RequestBody UserDTO userDTO){
-        registrationService.register(userDTO);
+    public String register(@RequestBody RequestUserDTO requestUserDTO){
+        registrationService.register(requestUserDTO);
         return "User added";
     }
 }

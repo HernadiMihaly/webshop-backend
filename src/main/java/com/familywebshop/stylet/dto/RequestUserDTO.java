@@ -1,6 +1,5 @@
 package com.familywebshop.stylet.dto;
 
-import com.familywebshop.stylet.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -11,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class UserDTO {
+public class RequestUserDTO {
     private String email;
     private String firstName;
     private String lastName;

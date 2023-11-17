@@ -1,6 +1,6 @@
 package com.familywebshop.stylet.service.impl;
 
-import com.familywebshop.stylet.dto.UserDTO;
+import com.familywebshop.stylet.dto.RequestUserDTO;
 import com.familywebshop.stylet.model.Role;
 import com.familywebshop.stylet.model.User;
 import com.familywebshop.stylet.repository.UserRepository;
@@ -19,17 +19,17 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void signUp(UserDTO userDTO) {
-        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        userRepository.save(mapDtoToUser(userDTO));
+    public void signUp(RequestUserDTO requestUserDTO) {
+        requestUserDTO.setPassword(passwordEncoder.encode(requestUserDTO.getPassword()));
+        userRepository.save(mapDtoToUser(requestUserDTO));
     }
 
-    private User mapDtoToUser(UserDTO userDTO){
+    private User mapDtoToUser(RequestUserDTO requestUserDTO){
         return User.builder()
-                .email(userDTO.getEmail())
-                .firstName(userDTO.getFirstName())
-                .lastName(userDTO.getLastName())
-                .password(userDTO.getPassword())
+                .email(requestUserDTO.getEmail())
+                .firstName(requestUserDTO.getFirstName())
+                .lastName(requestUserDTO.getLastName())
+                .password(requestUserDTO.getPassword())
                 .role(Role.ROLE_USER)
                 .build();
     }
