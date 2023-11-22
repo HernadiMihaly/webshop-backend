@@ -9,12 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class RequestUserDTO {
+public class ResponseUserDto {
     private String email;
 
     private String firstName;
 
     private String lastName;
-
-    private String password;
 }

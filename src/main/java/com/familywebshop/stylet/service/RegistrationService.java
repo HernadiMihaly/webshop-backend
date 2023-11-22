@@ -1,7 +1,7 @@
 package com.familywebshop.stylet.service;
 
-import com.familywebshop.stylet.dto.RequestUserDTO;
+import com.familywebshop.stylet.dto.RequestUserDto;
 
 public interface RegistrationService {
-    void register(RequestUserDTO requestUserDTO);
+    void register(RequestUserDto requestUserDTO);
 }

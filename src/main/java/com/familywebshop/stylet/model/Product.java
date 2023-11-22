@@ -1,18 +1,18 @@
 package com.familywebshop.stylet.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "products")
 public class Product {
     @Id
     @GeneratedValue
@@ -23,17 +23,10 @@ public class Product {
     private Double price;
     private String description;
     private String materials;
+    private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderColumn(name = "stock_order")
-    private List<ProductStock> productStockList;
-
-    @OneToMany(mappedBy = "product",  cascade = CascadeType.ALL ,orphanRemoval = true)
-    @OrderColumn(name = "product_order")
-    private List<ProductImage> productImages;
 
 }
