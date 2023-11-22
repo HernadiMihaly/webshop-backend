@@ -15,7 +15,7 @@ Welcome to the Webshop Backend repository. This Java-based Spring Boot applicati
 - Spring Boot
 - Spring Security
 - Hibernate
-- PostgreSQL
+- MySQL
 - RESTful API endpoints
 
 ## Getting Started
