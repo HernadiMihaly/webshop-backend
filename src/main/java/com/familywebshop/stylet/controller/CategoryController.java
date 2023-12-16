@@ -32,6 +32,7 @@ public class CategoryController {
     @GetMapping("/categories/subcategories/{id}")
     public ResponseEntity<List<CategoryDto>> getSubCategories(@PathVariable Long id){
         List<CategoryDto> subCategories = categoryService.getSubCategories(id);
+        System.out.println(id);
 
         return new ResponseEntity<>(subCategories, HttpStatus.OK);
     }

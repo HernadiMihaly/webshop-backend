@@ -22,13 +22,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void saveCategory(CategoryDto categoryDto) {
         categoryRepository.save(ModelMapper.getInstance()
-                .getModelMapper()
-                .map(categoryDto, Category.class));
+                .mapDtoToEntity(categoryDto, Category.class));
     }
 
     @Override
     public List<CategoryDto> getAllCategories() {
-        return getDtoListFromCategoryList(categoryRepository.findAll());
+        return ModelMapper.getInstance()
+                .mapEntityListToDtoList(categoryRepository.findAll(), CategoryDto.class);
     }
 
     @Override
@@ -37,7 +37,8 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new CategoryNotFoundException("Category does not exist!"))
                 .getSubCategories();
 
-        return getDtoListFromCategoryList(categories);
+        return ModelMapper.getInstance()
+                .mapEntityListToDtoList(categories, CategoryDto.class);
     }
 
     @Override
@@ -51,8 +52,7 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.save(category);
 
         return ModelMapper.getInstance()
-                .getModelMapper()
-                .map(category, CategoryDto.class);
+                .mapEntityToDto(category, CategoryDto.class);
     }
 
     @Override
@@ -66,17 +66,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new CategoryNotFoundException("Category does not exist!"));
 
         return ModelMapper.getInstance()
-                .getModelMapper()
-                .map(category, CategoryDto.class);
-    }
-
-    private List<CategoryDto> getDtoListFromCategoryList(List<Category> all) {
-
-        return all.stream()
-                .map(c -> ModelMapper.getInstance()
-                        .getModelMapper()
-                        .map(c, CategoryDto.class))
-                .toList();
+                .mapEntityToDto(category, CategoryDto.class);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.familywebshop.stylet.controller;
 
 import com.familywebshop.stylet.dto.ProductDto;
+import com.familywebshop.stylet.dto.ProductStockDto;
 import com.familywebshop.stylet.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,13 @@ public class ProductController {
         return new ResponseEntity<>(productDtos, HttpStatus.OK);
     }
 
+    @GetMapping("/products/stock/{id}")
+    public ResponseEntity<List<ProductStockDto>> getProductStockByProductId(@PathVariable("id") Long id){
+        List<ProductStockDto> productStockDtos = productService.getProductStockByProductId(id);
+
+        return new ResponseEntity<>(productStockDtos, HttpStatus.OK);
+    }
+
     @PostMapping("/admin/products")
     public ResponseEntity<String> saveProduct(@RequestBody ProductDto productDto) {
         productService.addProduct(productDto);
@@ -55,4 +63,6 @@ public class ProductController {
 
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
+
+
 }

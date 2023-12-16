@@ -1,12 +1,15 @@
 package com.familywebshop.stylet.service.impl;
 
 import com.familywebshop.stylet.dto.ProductDto;
+import com.familywebshop.stylet.dto.ProductStockDto;
 import com.familywebshop.stylet.exception.CategoryNotFoundException;
 import com.familywebshop.stylet.exception.ProductNotFoundException;
 import com.familywebshop.stylet.model.Category;
 import com.familywebshop.stylet.model.Product;
+import com.familywebshop.stylet.model.ProductStock;
 import com.familywebshop.stylet.repository.CategoryRepository;
 import com.familywebshop.stylet.repository.ProductRepository;
+import com.familywebshop.stylet.repository.ProductStockRepository;
 import com.familywebshop.stylet.service.ProductService;
 import com.familywebshop.stylet.util.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -20,23 +23,26 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    private final ProductStockRepository productStockRepository;
+
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, ProductStockRepository productStockRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.productStockRepository = productStockRepository;
     }
 
     @Override
     public void addProduct(ProductDto productDto) {
         productRepository.save(ModelMapper.getInstance()
-                .getModelMapper()
-                .map(productDto, Product.class));
+                .mapDtoToEntity(productDto, Product.class));
     }
 
     @Override
     public List<ProductDto> getAllProducts() {
         List<Product> products = productRepository.findAll();
 
-        return getDtoListFromProductList(products);
+        return ModelMapper.getInstance()
+                .mapEntityListToDtoList(products, ProductDto.class);
     }
 
     @Override
@@ -47,7 +53,8 @@ public class ProductServiceImpl implements ProductService {
         List<Product> productsByCategory = getAllProductsFromCategory(category);
 
 
-        return getDtoListFromProductList(productsByCategory);
+        return ModelMapper.getInstance()
+                .mapEntityListToDtoList(productsByCategory, ProductDto.class);
     }
 
     @Override
@@ -71,7 +78,7 @@ public class ProductServiceImpl implements ProductService {
 
             productRepository.save(existingProduct);
 
-            return ModelMapper.getInstance().getModelMapper().map(existingProduct, ProductDto.class);
+            return ModelMapper.getInstance().mapEntityToDto(existingProduct, ProductDto.class);
         } else {
             throw new ProductNotFoundException("Product not found with id: " + productId);
         }
@@ -80,11 +87,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto getProduct(Long id) {
         return ModelMapper.getInstance()
-                .getModelMapper()
-                .map(productRepository.findById(id)
+                .mapEntityToDto(productRepository.findById(id)
                         .orElseThrow(() -> new ProductNotFoundException("Product does not exist!")),
                         ProductDto.class
                 );
+    }
+
+    @Override
+    public List<ProductStockDto> getProductStockByProductId(Long id) {
+        List<ProductStock> productStocks = productStockRepository.findByProductId(id);
+
+        return ModelMapper.getInstance()
+                .mapEntityListToDtoList(productStocks, ProductStockDto.class);
     }
 
     private List<Product> getAllProductsFromCategory(Category category) {
@@ -95,18 +109,6 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return productsByCategory;
-    }
-
-    private List<ProductDto> getDtoListFromProductList(List<Product> products) {
-        List<ProductDto> productDtos = new ArrayList<>();
-
-        for (Product product : products){
-            productDtos.add(ModelMapper.getInstance()
-                    .getModelMapper()
-                    .map(product, ProductDto.class));
-        }
-
-        return productDtos;
     }
 
 }
