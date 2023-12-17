@@ -23,7 +23,7 @@ public class ProductDto {
 
     private String materials;
 
-    private Category category;
+    private Long categoryId;
 
     private String imageUrl;
 
