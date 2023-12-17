@@ -4,6 +4,8 @@ import com.familywebshop.stylet.model.Category;
 import com.familywebshop.stylet.model.Product;
 import lombok.*;
 
+import java.util.List;
+
 @EqualsAndHashCode
 @Getter
 @Setter
@@ -15,5 +17,7 @@ public class CategoryDto {
     private String name;
 
     private Category parentCategory;
+
+    private List<CategoryDto> subCategories;
 
 }
