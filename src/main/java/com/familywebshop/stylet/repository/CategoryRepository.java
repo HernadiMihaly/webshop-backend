@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    List<Category> findByParentCategory(Category parentCategory);
+    List<Category> findByParent(Category parent);
 }

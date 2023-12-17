@@ -11,12 +11,13 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CategoryDto {
     private Long id;
 
     private String name;
 
-    private Category parentCategory;
+    private Long parentId;
 
     private List<CategoryDto> subCategories;
 
