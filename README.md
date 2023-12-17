@@ -1,4 +1,5 @@
 # Webshop Backend Demo
+**This project is currently under development. The code is not stable yet!**
 
 Welcome to the Webshop Backend repository. This Java-based Spring Boot application serves as the backbone for our online fashion store, specializing in clothing and footwear.
 
