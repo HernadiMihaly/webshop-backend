@@ -5,7 +5,6 @@ import com.familywebshop.stylet.exception.CategoryNotFoundException;
 import com.familywebshop.stylet.model.Category;
 import com.familywebshop.stylet.repository.CategoryRepository;
 import com.familywebshop.stylet.service.CategoryService;
-import com.familywebshop.stylet.util.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -73,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
         return mapEntityToDto(category);
     }
 
-    private static Category mapDtoToEntity(CategoryDto categoryDto) {
+    private Category mapDtoToEntity(CategoryDto categoryDto) {
         return Category.builder()
                 .id(categoryDto.getId())
                 .name(categoryDto.getName())
@@ -83,7 +82,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     }
 
-    private static CategoryDto mapEntityToDto(Category category) {
+    private CategoryDto mapEntityToDto(Category category) {
         return CategoryDto.builder()
                 .id(category.getId())
                 .name(category.getName())
@@ -92,7 +91,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .build();
     }
 
-    private static Category mapDtoToEntity(Long parentId) {
+    private Category mapDtoToEntity(Long parentId) {
         if (parentId == null) {
             return null;
         }
@@ -101,15 +100,15 @@ public class CategoryServiceImpl implements CategoryService {
         return parentCategory;
     }
 
-    private static List<Category> mapDtoListToEntityList(List<CategoryDto> categoryDtoList) {
+    private List<Category> mapDtoListToEntityList(List<CategoryDto> categoryDtoList) {
         return categoryDtoList.stream()
-                .map(CategoryServiceImpl::mapDtoToEntity)
+                .map(this::mapDtoToEntity)
                 .collect(Collectors.toList());
     }
 
-    private static List<CategoryDto> mapEntityListToDtoList(List<Category> categoryList) {
+    private List<CategoryDto> mapEntityListToDtoList(List<Category> categoryList) {
         return categoryList.stream()
-                .map(CategoryServiceImpl::mapEntityToDto)
+                .map(this::mapEntityToDto)
                 .collect(Collectors.toList());
     }
 
