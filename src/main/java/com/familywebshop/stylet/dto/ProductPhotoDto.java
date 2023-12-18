@@ -7,11 +7,10 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductStockDto {
+public class ProductPhotoDto {
+
     private Long id;
 
-    private String size;
-
-    private Long quantity;
+    private String imageUrl;
 
 }

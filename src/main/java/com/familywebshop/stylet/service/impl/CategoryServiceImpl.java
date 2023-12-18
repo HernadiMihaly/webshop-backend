@@ -73,25 +73,23 @@ public class CategoryServiceImpl implements CategoryService {
         return mapEntityToDto(category);
     }
 
-    /* Sajnos az egymásba ágyazott CategoryDto-k és a parentCategoryId miatt ennél az osztálynál
-    saját map-elést kell létrehoznunk és nem tudjuk használni a ModelMapper singleton-t.
-     */
     private static Category mapDtoToEntity(CategoryDto categoryDto) {
-        Category category = new Category();
-        category.setId(categoryDto.getId());
-        category.setName(categoryDto.getName());
-        category.setParent(mapDtoToEntity(categoryDto.getParentId()));
-        category.setSubCategories(mapDtoListToEntityList(categoryDto.getSubCategories()));
-        return category;
+        return Category.builder()
+                .id(categoryDto.getId())
+                .name(categoryDto.getName())
+                .parent(mapDtoToEntity(categoryDto.getParentId()))
+                .subCategories(mapDtoListToEntityList(categoryDto.getSubCategories()))
+                .build();
+
     }
 
     private static CategoryDto mapEntityToDto(Category category) {
-        CategoryDto categoryDto = new CategoryDto();
-        categoryDto.setId(category.getId());
-        categoryDto.setName(category.getName());
-        categoryDto.setParentId(category.getParent() != null ? category.getParent().getId() : null);
-        categoryDto.setSubCategories(mapEntityListToDtoList(category.getSubCategories()));
-        return categoryDto;
+        return CategoryDto.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .parentId(category.getParent() != null ? category.getParent().getId() : null)
+                .subCategories(mapEntityListToDtoList(category.getSubCategories()))
+                .build();
     }
 
     private static Category mapDtoToEntity(Long parentId) {

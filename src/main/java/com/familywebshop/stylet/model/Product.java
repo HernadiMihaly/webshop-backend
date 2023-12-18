@@ -23,14 +23,15 @@ public class Product {
     private Double price;
     private String description;
     private String materials;
-    private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
     @OneToMany(mappedBy = "product",  cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<ProductStock> productStock;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductPhoto> productPhotos;
 
 }

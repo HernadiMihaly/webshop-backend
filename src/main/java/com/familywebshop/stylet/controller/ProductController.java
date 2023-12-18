@@ -36,28 +36,22 @@ public class ProductController {
         return new ResponseEntity<>(productDtos, HttpStatus.OK);
     }
 
-    @GetMapping("/products/stock/{id}")
-    public ResponseEntity<List<ProductStockDto>> getProductStockByProductId(@PathVariable("id") Long id){
-        List<ProductStockDto> productStockDtos = productService.getProductStockByProductId(id);
-
-        return new ResponseEntity<>(productStockDtos, HttpStatus.OK);
-    }
-
-    @PostMapping("/admin/products")
+    //*TODO: INNENTŐL /admin kell majd minden elé!! CSAK ÁTMENETILEG LETT KIVÉVE
+    @PostMapping("/products")
     public ResponseEntity<String> saveProduct(@RequestBody ProductDto productDto) {
         productService.addProduct(productDto);
 
         return ResponseEntity.ok("Product added successfully.");
     }
 
-    @DeleteMapping("/admin/products/{id}")
+    @DeleteMapping("/products/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable("id") Long id) {
         productService.deleteProduct(id);
 
         return ResponseEntity.ok("Product successfully deleted!");
     }
 
-    @PutMapping("/admin/products/{id}")
+    @PutMapping("/products/{id}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto) {
         ProductDto updatedProduct = productService.updateProduct(id, productDto);
 

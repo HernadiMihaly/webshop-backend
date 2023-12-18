@@ -1,7 +1,10 @@
 package com.familywebshop.stylet.dto;
 
-import com.familywebshop.stylet.model.Category;
+import com.familywebshop.stylet.model.ProductPhoto;
+import com.familywebshop.stylet.model.ProductStock;
 import lombok.*;
+
+import java.util.List;
 
 @EqualsAndHashCode
 @Getter
@@ -23,8 +26,10 @@ public class ProductDto {
 
     private String materials;
 
-    private Long categoryId;
+    private Long category;
 
-    private String imageUrl;
+    private List<ProductStockDto> productStock;
+
+    private List<ProductPhotoDto> productPhotos;
 
 }
