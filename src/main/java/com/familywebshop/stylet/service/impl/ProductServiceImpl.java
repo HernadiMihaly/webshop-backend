@@ -17,7 +17,6 @@ import com.familywebshop.stylet.service.ProductStockService;
 import com.familywebshop.stylet.util.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,8 +52,7 @@ public class ProductServiceImpl implements ProductService {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException("Category does not exist!"));
 
-        List<Product> productsByCategory = getAllProductsFromCategory(category);
-
+       List<Product> productsByCategory = category.getProducts();
 
         return mapEntityListToDtoList(productsByCategory);
     }
@@ -74,6 +72,7 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(productDto.getDescription());
         product.setMaterials(productDto.getMaterials());
         product.setPrice(productDto.getPrice());
+        product.setBrand(productDto.getBrand());
         product.setCategory(
                 categoryRepository.findById(productDto.getCategory())
                         .orElseThrow(() -> new CategoryNotFoundException(
@@ -95,16 +94,6 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ProductNotFoundException("Product does not exist!")));
     }
 
-    private List<Product> getAllProductsFromCategory(Category category) {
-        List<Product> productsByCategory = new ArrayList<>(category.getProducts());
-
-        for (Category subCategory : category.getSubCategories()) {
-            productsByCategory.addAll(getAllProductsFromCategory(subCategory));
-        }
-
-        return productsByCategory;
-    }
-
     private Product mapDtoToEntity(ProductDto productDto) {
         Product product = Product.builder()
                 .name(productDto.getName())
@@ -112,6 +101,7 @@ public class ProductServiceImpl implements ProductService {
                 .price(productDto.getPrice())
                 .description(productDto.getDescription())
                 .materials(productDto.getMaterials())
+                .brand(productDto.getBrand())
                 .category(categoryRepository.findById(productDto.getCategory())
                         .orElseThrow(() -> new CategoryNotFoundException("The products category not found!")))
                 .productStock(ModelMapper.getInstance()
@@ -134,6 +124,7 @@ public class ProductServiceImpl implements ProductService {
                 .price(product.getPrice())
                 .description(product.getDescription())
                 .materials(product.getMaterials())
+                .brand(product.getBrand())
                 .category(product.getCategory().getId())
                 .productStock(ModelMapper.getInstance()
                         .mapEntityListToDtoList(product.getProductStock(), ProductStockDto.class))

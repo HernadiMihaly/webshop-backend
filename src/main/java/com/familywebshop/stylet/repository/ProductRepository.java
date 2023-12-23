@@ -2,7 +2,6 @@ package com.familywebshop.stylet.repository;
 
 import com.familywebshop.stylet.model.Category;
 import com.familywebshop.stylet.model.Product;
-import com.familywebshop.stylet.model.ProductStock;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

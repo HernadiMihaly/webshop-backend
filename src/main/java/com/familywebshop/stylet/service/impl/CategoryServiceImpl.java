@@ -72,12 +72,25 @@ public class CategoryServiceImpl implements CategoryService {
         return mapEntityToDto(category);
     }
 
+    @Override
+    public CategoryDto getParentCategory(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("Category does not exist!"));
+
+        try {
+            Category parentCategory = category.getParent();
+
+            return mapEntityToDto(parentCategory);
+        } catch (Exception e){
+            throw new CategoryNotFoundException("There's no parent of root category: " + id);
+        }
+    }
+
     private Category mapDtoToEntity(CategoryDto categoryDto) {
         return Category.builder()
                 .id(categoryDto.getId())
                 .name(categoryDto.getName())
                 .parent(mapDtoToEntity(categoryDto.getParentId()))
-                .subCategories(mapDtoListToEntityList(categoryDto.getSubCategories()))
                 .build();
 
     }
@@ -87,7 +100,6 @@ public class CategoryServiceImpl implements CategoryService {
                 .id(category.getId())
                 .name(category.getName())
                 .parentId(category.getParent() != null ? category.getParent().getId() : null)
-                .subCategories(mapEntityListToDtoList(category.getSubCategories()))
                 .build();
     }
 
@@ -101,6 +113,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private List<Category> mapDtoListToEntityList(List<CategoryDto> categoryDtoList) {
+        if (categoryDtoList == null) return null;
+
         return categoryDtoList.stream()
                 .map(this::mapDtoToEntity)
                 .collect(Collectors.toList());

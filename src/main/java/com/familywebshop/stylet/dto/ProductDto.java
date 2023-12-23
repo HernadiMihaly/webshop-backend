@@ -1,7 +1,5 @@
 package com.familywebshop.stylet.dto;
 
-import com.familywebshop.stylet.model.ProductPhoto;
-import com.familywebshop.stylet.model.ProductStock;
 import lombok.*;
 
 import java.util.List;
@@ -25,6 +23,8 @@ public class ProductDto {
     private String description;
 
     private String materials;
+
+    private String brand;
 
     private Long category;
 

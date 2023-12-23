@@ -1,6 +1,5 @@
 package com.familywebshop.stylet.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,17 +13,24 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "products")
 public class Product {
+
     @Id
     @GeneratedValue
     private Long id;
 
     private String name;
+
     private String color;
+
     private Double price;
+
     private String description;
+
     private String materials;
 
-    @ManyToOne
+    private String brand;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 

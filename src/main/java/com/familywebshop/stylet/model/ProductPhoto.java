@@ -12,14 +12,16 @@ import lombok.*;
 @AllArgsConstructor
 @Table(name = "product_photos")
 public class ProductPhoto {
+
     @Id
     @GeneratedValue
     private Long id;
 
     private String imageUrl;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     @JsonIgnore
     private Product product;
+
 }

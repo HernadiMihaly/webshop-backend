@@ -29,6 +29,13 @@ public class CategoryController {
         return new ResponseEntity<>(categoryDto, HttpStatus.OK);
     }
 
+    @GetMapping("/categories/{id}/parent")
+    public ResponseEntity<CategoryDto> getParentCategory(@PathVariable Long id){
+        CategoryDto categoryDto = categoryService.getParentCategory(id);
+
+        return new ResponseEntity<>(categoryDto, HttpStatus.OK);
+    }
+
     @GetMapping("/categories/subcategories/{id}")
     public ResponseEntity<List<CategoryDto>> getSubCategories(@PathVariable Long id){
         List<CategoryDto> subCategories = categoryService.getSubCategories(id);
@@ -37,22 +44,24 @@ public class CategoryController {
         return new ResponseEntity<>(subCategories, HttpStatus.OK);
     }
 
+    /*TODO: innetől a /admin-t majd elé kell helyezni később minden root elé
+     */
 
-    @PostMapping("/admin/categories")
+    @PostMapping("/categories")
     public ResponseEntity<String> saveCategory(@RequestBody CategoryDto categoryDto) {
         categoryService.saveCategory(categoryDto);
 
         return ResponseEntity.ok("Category added successfully.");
     }
 
-    @DeleteMapping("/admin/categories/{id}")
+    @DeleteMapping("/categories/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable Long id){
         categoryService.deleteCategory(id);
 
         return ResponseEntity.ok("Category deleted successfully!");
     }
 
-    @PutMapping("/admin/categories/{id}")
+    @PutMapping("/categories/{id}")
     public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long id, @RequestBody CategoryDto categoryDto) {
 
         return new ResponseEntity<>(categoryService.updateCategory(id, categoryDto), HttpStatus.OK );
