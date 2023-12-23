@@ -21,4 +21,5 @@ public class RegistrationServiceImpl implements RegistrationService {
             userService.signUp(requestUserDTO);
         } else throw new IllegalStateException("Email is not valid!");
     }
+
 }

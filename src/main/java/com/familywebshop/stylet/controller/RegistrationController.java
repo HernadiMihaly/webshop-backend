@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class RegistrationController {
+
     private final RegistrationService registrationService;
 
     public RegistrationController(RegistrationService registrationService) {
@@ -20,4 +21,5 @@ public class RegistrationController {
         registrationService.register(requestUserDTO);
         return ResponseEntity.ok("User successfully registered!");
     }
+
 }

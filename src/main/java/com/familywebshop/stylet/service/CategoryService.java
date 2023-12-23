@@ -19,4 +19,5 @@ public interface CategoryService {
     CategoryDto getCategory(Long id);
 
     CategoryDto getParentCategory(Long id);
+
 }

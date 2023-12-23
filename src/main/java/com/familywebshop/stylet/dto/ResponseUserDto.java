@@ -10,9 +10,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ResponseUserDto {
+
     private String email;
 
     private String firstName;
 
     private String lastName;
+
 }

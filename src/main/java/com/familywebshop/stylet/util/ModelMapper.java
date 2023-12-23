@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModelMapper {
+
     private static ModelMapper INSTANCE = null;
 
     private final org.modelmapper.ModelMapper modelMapper = new org.modelmapper.ModelMapper();

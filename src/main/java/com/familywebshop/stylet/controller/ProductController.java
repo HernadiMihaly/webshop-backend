@@ -1,7 +1,6 @@
 package com.familywebshop.stylet.controller;
 
 import com.familywebshop.stylet.dto.ProductDto;
-import com.familywebshop.stylet.dto.ProductStockDto;
 import com.familywebshop.stylet.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +10,7 @@ import java.util.List;
 
 @RestController
 public class ProductController {
+
     private final ProductService productService;
 
     public ProductController(ProductService productService) {
@@ -57,6 +57,5 @@ public class ProductController {
 
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
-
 
 }

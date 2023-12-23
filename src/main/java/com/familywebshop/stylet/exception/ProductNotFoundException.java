@@ -1,8 +1,8 @@
 package com.familywebshop.stylet.exception;
 
 public class ProductNotFoundException extends RuntimeException {
-    public ProductNotFoundException() {
-    }
+
+    public ProductNotFoundException() {}
 
     public ProductNotFoundException(String message) {
         super(message);
@@ -19,4 +19,5 @@ public class ProductNotFoundException extends RuntimeException {
     public ProductNotFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
+
 }

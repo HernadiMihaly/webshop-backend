@@ -1,8 +1,6 @@
 package com.familywebshop.stylet.service;
 
-import com.familywebshop.stylet.dto.CategoryDto;
 import com.familywebshop.stylet.dto.ProductDto;
-import com.familywebshop.stylet.dto.ProductStockDto;
 
 import java.util.List;
 

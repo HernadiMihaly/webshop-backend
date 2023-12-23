@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductStockDto {
+
     private Long id;
 
     private String size;
