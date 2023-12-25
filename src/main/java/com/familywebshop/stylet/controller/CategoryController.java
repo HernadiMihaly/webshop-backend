@@ -49,9 +49,16 @@ public class CategoryController {
 
     @PostMapping("/categories")
     public ResponseEntity<String> saveCategory(@RequestBody CategoryDto categoryDto) {
-        categoryService.saveCategory(categoryDto);
+        categoryService.addCategory(categoryDto);
 
         return ResponseEntity.ok("Category added successfully.");
+    }
+
+    @PostMapping("/categories/all")
+    public ResponseEntity<String> saveAllCategories(@RequestBody List<CategoryDto> categoryDtoList) {
+        categoryService.addAllCategories(categoryDtoList);
+
+        return ResponseEntity.ok("Categories added successfully.");
     }
 
     @DeleteMapping("/categories/{id}")

@@ -44,6 +44,13 @@ public class ProductController {
         return ResponseEntity.ok("Product added successfully.");
     }
 
+    @PostMapping("/products/all")
+    public ResponseEntity<String> saveAllProducts(@RequestBody List<ProductDto> productDtoList) {
+        productService.addAllProducts(productDtoList);
+
+        return ResponseEntity.ok("Products added successfully.");
+    }
+
     @DeleteMapping("/products/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable("id") Long id) {
         productService.deleteProduct(id);

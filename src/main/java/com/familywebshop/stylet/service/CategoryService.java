@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CategoryService {
 
-    void saveCategory(CategoryDto categoryDto);
+    void addCategory(CategoryDto categoryDto);
 
     List<CategoryDto> getAllCategories();
 
@@ -20,4 +20,5 @@ public interface CategoryService {
 
     CategoryDto getParentCategory(Long id);
 
+    void addAllCategories(List<CategoryDto> categoryDto);
 }

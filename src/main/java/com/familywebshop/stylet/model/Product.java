@@ -28,8 +28,6 @@ public class Product {
 
     private String materials;
 
-    private String brand;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;

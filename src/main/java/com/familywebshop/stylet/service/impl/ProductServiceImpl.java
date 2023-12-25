@@ -44,6 +44,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public void addAllProducts(List<ProductDto> productDtoList) {
+        productRepository.saveAll(mapDtoListToEntityList(productDtoList));
+    }
+
+    @Override
     public List<ProductDto> getAllProducts() {
         return mapEntityListToDtoList(productRepository.findAll());
     }
@@ -73,7 +78,6 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(productDto.getDescription());
         product.setMaterials(productDto.getMaterials());
         product.setPrice(productDto.getPrice());
-        product.setBrand(productDto.getBrand());
         product.setCategory(
                 categoryRepository.findById(productDto.getCategory())
                         .orElseThrow(() -> new CategoryNotFoundException(
@@ -102,7 +106,6 @@ public class ProductServiceImpl implements ProductService {
                 .price(productDto.getPrice())
                 .description(productDto.getDescription())
                 .materials(productDto.getMaterials())
-                .brand(productDto.getBrand())
                 .category(categoryRepository.findById(productDto.getCategory())
                         .orElseThrow(() -> new CategoryNotFoundException("The products category not found!")))
                 .productStock(ModelMapper.getInstance()
@@ -125,7 +128,6 @@ public class ProductServiceImpl implements ProductService {
                 .price(product.getPrice())
                 .description(product.getDescription())
                 .materials(product.getMaterials())
-                .brand(product.getBrand())
                 .category(product.getCategory().getId())
                 .productStock(ModelMapper.getInstance()
                         .mapEntityListToDtoList(product.getProductStock(), ProductStockDto.class))
@@ -138,6 +140,13 @@ public class ProductServiceImpl implements ProductService {
         return productList
                 .stream()
                 .map(this::mapEntityToDto)
+                .collect(Collectors.toList());
+    }
+
+    private List<Product> mapDtoListToEntityList(List<ProductDto> productDtoList) {
+        return productDtoList
+                .stream()
+                .map(this::mapDtoToEntity)
                 .collect(Collectors.toList());
     }
 

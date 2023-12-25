@@ -24,8 +24,6 @@ public class ProductDto {
 
     private String materials;
 
-    private String brand;
-
     private Long category;
 
     private List<ProductStockDto> productStock;

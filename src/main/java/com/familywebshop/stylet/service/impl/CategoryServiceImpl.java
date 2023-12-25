@@ -21,8 +21,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void saveCategory(CategoryDto categoryDto) {
+    public void addCategory(CategoryDto categoryDto) {
         categoryRepository.save(mapDtoToEntity(categoryDto));
+    }
+
+    @Override
+    public void addAllCategories(List<CategoryDto> categoryDtoList) {
+        categoryRepository.saveAll(mapDtoListToEntityList(categoryDtoList));
     }
 
     @Override
