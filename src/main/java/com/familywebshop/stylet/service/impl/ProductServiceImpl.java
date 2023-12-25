@@ -49,6 +49,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDto> getAllProductsByRootCategoryName(String rootCategoryName) {
+        Category rootCategory = categoryRepository.findByName(rootCategoryName)
+                .orElseThrow(() -> new CategoryNotFoundException("Category: " + rootCategoryName + " does not exist!"));
+
+        return collectProductsFromCategory(rootCategory);
+    }
+
+    @Override
     public List<ProductDto> getAllProducts() {
         return mapEntityListToDtoList(productRepository.findAll());
     }
@@ -97,6 +105,14 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto getProduct(Long id) {
         return mapEntityToDto(productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product does not exist!")));
+    }
+
+    private List<ProductDto> collectProductsFromCategory(Category category) {
+        return category.getSubCategories().stream()
+                .flatMap(subCategory -> subCategory.getSubCategories().stream())
+                .flatMap(subSubCategory -> subSubCategory.getProducts().stream())
+                .map(this::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
     private Product mapDtoToEntity(ProductDto productDto) {

@@ -44,6 +44,7 @@ public class WebSecurityConfiguration {
                 .authorizeHttpRequests(auth -> {
                             auth.requestMatchers("/",
                                             "/identity/register",
+                                            "/identity/subscribe",
                                             "/products/**",
                                             "/categories/**").permitAll()
                                     .requestMatchers("/user/**").hasRole("USER")
@@ -53,7 +54,7 @@ public class WebSecurityConfiguration {
                 ).userDetailsService(userDetailsService())
                 .formLogin(withDefaults())
                 .logout(LogoutConfigurer::permitAll)
-                .cors(Customizer.withDefaults());
+                .cors(withDefaults());
 
         return http.build();
     }
@@ -67,12 +68,9 @@ public class WebSecurityConfiguration {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
-        configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Requestor-Type"));
-        configuration.setExposedHeaders(List.of("X-Get-Header"));
-        configuration.setMaxAge(3600L);
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+        configuration.setAllowedMethods(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
 

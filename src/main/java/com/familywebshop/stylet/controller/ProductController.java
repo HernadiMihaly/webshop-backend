@@ -36,6 +36,21 @@ public class ProductController {
         return new ResponseEntity<>(productDtos, HttpStatus.OK);
     }
 
+    @GetMapping("/products/category/name/male")
+    public ResponseEntity<List<ProductDto>> getAllMaleProducts(){
+        return new ResponseEntity<>(productService.getAllProductsByRootCategoryName("férfi"), HttpStatus.OK);
+    }
+
+    @GetMapping("/products/category/name/female")
+    public ResponseEntity<List<ProductDto>> getAllFemaleProducts(){
+        return new ResponseEntity<>(productService.getAllProductsByRootCategoryName("női"), HttpStatus.OK);
+    }
+
+    @GetMapping("/products/category/name/children")
+    public ResponseEntity<List<ProductDto>> getAllChildrenProducts(){
+        return new ResponseEntity<>(productService.getAllProductsByRootCategoryName("gyerek"), HttpStatus.OK);
+    }
+
     //*TODO: INNENTŐL /admin kell majd minden elé!! CSAK ÁTMENETILEG LETT KIVÉVE
     @PostMapping("/products")
     public ResponseEntity<String> saveProduct(@RequestBody ProductDto productDto) {
