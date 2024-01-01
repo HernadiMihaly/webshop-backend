@@ -17,11 +17,6 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/products")
-    public ResponseEntity<List<ProductDto>> getAllProducts(){
-        return new ResponseEntity<>(productService.getAllProducts(), HttpStatus.OK);
-    }
-
     @GetMapping("/products/{id}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable("id") Long id){
         ProductDto productDto = productService.getProduct(id);
@@ -29,26 +24,69 @@ public class ProductController {
         return new ResponseEntity<>(productDto, HttpStatus.OK);
     }
 
+    @GetMapping("/products")
+    public ResponseEntity<List<ProductDto>> getAllProducts(
+            @RequestParam List<String> colors,
+            @RequestParam String size,
+            @RequestParam String sortBy,
+            @RequestParam double minPrice,
+            @RequestParam double maxPrice
+    ){
+        return new ResponseEntity<>(productService.getAllProducts(colors, size, sortBy, minPrice, maxPrice), HttpStatus.OK);
+    }
+
     @GetMapping("/products/category/{id}")
-    public ResponseEntity<List<ProductDto>> getProductsByCategory(@PathVariable("id") Long id){
-        List<ProductDto> productDtos = productService.getProductsByCategory(id);
+    public ResponseEntity<List<ProductDto>> getProductsByCategory(
+            @PathVariable("id") Long id,
+            @RequestParam List<String> colors,
+            @RequestParam String size,
+            @RequestParam String sortBy,
+            @RequestParam double minPrice,
+            @RequestParam double maxPrice
+    ){
+        List<ProductDto> productDtos = productService
+                .getProductsByCategoryAndParams(id, colors, size, sortBy, minPrice, maxPrice);
 
         return new ResponseEntity<>(productDtos, HttpStatus.OK);
     }
 
     @GetMapping("/products/category/name/male")
-    public ResponseEntity<List<ProductDto>> getAllMaleProducts(){
-        return new ResponseEntity<>(productService.getAllProductsByRootCategoryName("férfi"), HttpStatus.OK);
+    public ResponseEntity<List<ProductDto>> getAllMaleProducts(
+            @RequestParam List<String> colors,
+            @RequestParam String size,
+            @RequestParam String sortBy,
+            @RequestParam double minPrice,
+            @RequestParam double maxPrice
+    ){
+        return new ResponseEntity<>(
+                productService
+                .getAllProductsByRootCategoryName(
+                        "férfi", colors, size, sortBy, minPrice, maxPrice
+                        ),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping("/products/category/name/female")
-    public ResponseEntity<List<ProductDto>> getAllFemaleProducts(){
-        return new ResponseEntity<>(productService.getAllProductsByRootCategoryName("női"), HttpStatus.OK);
+    public ResponseEntity<List<ProductDto>> getAllFemaleProducts(
+            @RequestParam List<String> colors,
+            @RequestParam String size,
+            @RequestParam String sortBy,
+            @RequestParam double minPrice,
+            @RequestParam double maxPrice
+    ){
+        return new ResponseEntity<>(productService.getAllProductsByRootCategoryName("női", colors, size, sortBy, minPrice, maxPrice), HttpStatus.OK);
     }
 
     @GetMapping("/products/category/name/children")
-    public ResponseEntity<List<ProductDto>> getAllChildrenProducts(){
-        return new ResponseEntity<>(productService.getAllProductsByRootCategoryName("gyerek"), HttpStatus.OK);
+    public ResponseEntity<List<ProductDto>> getAllChildrenProducts(
+            @RequestParam List<String> colors,
+            @RequestParam String size,
+            @RequestParam String sortBy,
+            @RequestParam double minPrice,
+            @RequestParam double maxPrice
+    ){
+        return new ResponseEntity<>(productService.getAllProductsByRootCategoryName("gyerek", colors, size, sortBy, minPrice, maxPrice), HttpStatus.OK);
     }
 
     //*TODO: INNENTŐL /admin kell majd minden elé!! CSAK ÁTMENETILEG LETT KIVÉVE

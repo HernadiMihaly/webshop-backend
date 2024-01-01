@@ -5,11 +5,12 @@ import com.familywebshop.stylet.dto.ProductDto;
 import java.util.List;
 
 public interface ProductService {
-    List<ProductDto> getAllProducts();
+
+    List<ProductDto> getAllProducts(List<String> colors, String size, String sortBy, double minPrice, double maxPrice);
 
     void addProduct(ProductDto productDto);
 
-    List<ProductDto> getProductsByCategory(Long id);
+    List<ProductDto> getProductsByCategoryAndParams(Long id, List<String> colors, String size, String sortBy, double minPrice, double maxPrice);
 
     void deleteProduct(Long id);
 
@@ -19,5 +20,6 @@ public interface ProductService {
 
     void addAllProducts(List<ProductDto> productDtoList);
 
-    List<ProductDto> getAllProductsByRootCategoryName(String rootCategoryName);
+    List<ProductDto> getAllProductsByRootCategoryName(String rootCategoryName, List<String> colors, String size, String sortBy, double minPrice, double maxPrice);
+
 }

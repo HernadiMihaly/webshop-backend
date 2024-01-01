@@ -10,20 +10,20 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "product_stock")
+@Table(name = "product_stocks")
 public class ProductStock {
 
     @Id
     @GeneratedValue
     private Long id;
 
+    private String size;
+
+    private Long quantity;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     @JsonIgnore
     private Product product;
-
-    private String size;
-
-    private Long quantity;
 
 }

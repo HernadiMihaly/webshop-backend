@@ -2,6 +2,7 @@ package com.familywebshop.stylet.dto;
 
 import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
 @EqualsAndHashCode
@@ -26,8 +27,10 @@ public class ProductDto {
 
     private Long category;
 
-    private List<ProductStockDto> productStock;
+    private Date createdAt;
 
     private List<ProductPhotoDto> productPhotos;
+
+    private List<ProductStockDto> productStocks;
 
 }
