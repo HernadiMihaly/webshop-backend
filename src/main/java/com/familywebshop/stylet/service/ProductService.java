@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface ProductService {
 
-    List<ProductDto> getAllProducts(List<String> colors, String size, String sortBy, double minPrice, double maxPrice);
+    List<ProductDto> getAllProductsByParams(List<String> colors, String size, String sortBy, double minPrice, double maxPrice);
+
+    List<ProductDto> getAllProducts();
 
     void addProduct(ProductDto productDto);
 

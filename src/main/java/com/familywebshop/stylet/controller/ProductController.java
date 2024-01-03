@@ -25,18 +25,38 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public ResponseEntity<List<ProductDto>> getAllProducts(
+    public ResponseEntity<List<ProductDto>> getAllProducts(){
+        try {
+            List<ProductDto> products = productService.getAllProducts();
+
+            return new ResponseEntity<>(products, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/products/byParams")
+    public ResponseEntity<?> getAllProductsByParams(
             @RequestParam List<String> colors,
             @RequestParam String size,
             @RequestParam String sortBy,
             @RequestParam double minPrice,
             @RequestParam double maxPrice
     ){
-        return new ResponseEntity<>(productService.getAllProducts(colors, size, sortBy, minPrice, maxPrice), HttpStatus.OK);
+        try {
+            List<ProductDto> products = productService
+                    .getAllProductsByParams(colors, size, sortBy, minPrice, maxPrice);
+
+            return new ResponseEntity<>(products, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/products/category/{id}")
-    public ResponseEntity<List<ProductDto>> getProductsByCategory(
+    public ResponseEntity<List<ProductDto>> getProductsByCategoryAndParams(
             @PathVariable("id") Long id,
             @RequestParam List<String> colors,
             @RequestParam String size,
@@ -44,49 +64,66 @@ public class ProductController {
             @RequestParam double minPrice,
             @RequestParam double maxPrice
     ){
-        List<ProductDto> productDtos = productService
-                .getProductsByCategoryAndParams(id, colors, size, sortBy, minPrice, maxPrice);
+        try {
+            List<ProductDto> productDtos = productService
+                    .getProductsByCategoryAndParams(id, colors, size, sortBy, minPrice, maxPrice);
 
-        return new ResponseEntity<>(productDtos, HttpStatus.OK);
+            return new ResponseEntity<>(productDtos, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/products/category/name/male")
-    public ResponseEntity<List<ProductDto>> getAllMaleProducts(
+    public ResponseEntity<List<ProductDto>> getAllMaleProductsByParams(
             @RequestParam List<String> colors,
             @RequestParam String size,
             @RequestParam String sortBy,
             @RequestParam double minPrice,
             @RequestParam double maxPrice
     ){
-        return new ResponseEntity<>(
-                productService
-                .getAllProductsByRootCategoryName(
-                        "férfi", colors, size, sortBy, minPrice, maxPrice
-                        ),
-                HttpStatus.OK
-        );
+        try {
+            return new ResponseEntity<>(productService.getAllProductsByRootCategoryName(
+                                    "férfi", colors, size, sortBy, minPrice, maxPrice
+            ), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/products/category/name/female")
-    public ResponseEntity<List<ProductDto>> getAllFemaleProducts(
+    public ResponseEntity<List<ProductDto>> getAllFemaleProductsByParams(
             @RequestParam List<String> colors,
             @RequestParam String size,
             @RequestParam String sortBy,
             @RequestParam double minPrice,
             @RequestParam double maxPrice
     ){
-        return new ResponseEntity<>(productService.getAllProductsByRootCategoryName("női", colors, size, sortBy, minPrice, maxPrice), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(productService.getAllProductsByRootCategoryName(
+                    "női", colors, size, sortBy, minPrice, maxPrice
+            ),HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/products/category/name/children")
-    public ResponseEntity<List<ProductDto>> getAllChildrenProducts(
+    public ResponseEntity<List<ProductDto>> getAllChildrenProductsByParams(
             @RequestParam List<String> colors,
             @RequestParam String size,
             @RequestParam String sortBy,
-            @RequestParam double minPrice,
+            @RequestParam  double minPrice,
             @RequestParam double maxPrice
     ){
-        return new ResponseEntity<>(productService.getAllProductsByRootCategoryName("gyerek", colors, size, sortBy, minPrice, maxPrice), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(productService.getAllProductsByRootCategoryName(
+                    "gyerek", colors, size, sortBy, minPrice, maxPrice
+            ), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     //*TODO: INNENTŐL /admin kell majd minden elé!! CSAK ÁTMENETILEG LETT KIVÉVE

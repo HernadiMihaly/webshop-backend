@@ -15,7 +15,6 @@ import com.familywebshop.stylet.service.ProductService;
 import com.familywebshop.stylet.service.ProductStockService;
 import com.familywebshop.stylet.util.ModelMapper;
 import com.familywebshop.stylet.util.ProductSpecification;
-import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -42,19 +41,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
     public ProductDto getProduct(Long id) {
         return mapEntityToDto(productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product does not exist!")));
     }
 
     @Override
-    public List<ProductDto> getAllProducts(List<String> colors, String size, String sortBy, double minPrice, double maxPrice) {
+    public List<ProductDto> getAllProductsByParams(List<String> colors, String size, String sortBy, double minPrice, double maxPrice) {
         return mapEntityListToDtoList(productRepository
                 .findAll(getSpecification(
                                 colors, getSizeFromParam(size), minPrice, maxPrice
                         ),
                         getSortRuleFromParam(sortBy)));
+    }
+
+    @Override
+    public List<ProductDto> getAllProducts() {
+        return mapEntityListToDtoList(productRepository.findAll());
     }
 
     @Override
