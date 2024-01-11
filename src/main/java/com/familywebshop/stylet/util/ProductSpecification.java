@@ -55,8 +55,12 @@ public class ProductSpecification {
             if (colors.isEmpty()) {
                 return criteriaBuilder.conjunction();
             } else {
-                Predicate[] predicates = colors.stream()
-                        .map(color -> criteriaBuilder.like(root.get("color"), "%" + color + "%"))
+                List<String> lowercaseColors = colors.stream()
+                        .map(String::toLowerCase)
+                        .toList();
+
+                Predicate[] predicates = lowercaseColors.stream()
+                        .map(color -> criteriaBuilder.like(criteriaBuilder.lower(root.get("color")), "%" + color + "%"))
                         .toArray(Predicate[]::new);
 
                 return criteriaBuilder.or(predicates);
