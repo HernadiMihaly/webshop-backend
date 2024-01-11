@@ -38,10 +38,7 @@ public class ProductRepositoryTest {
     public void findAllWithSpecification_WhenColorIsEmpty_returnsFourProducts() {
         Category category = saveCategory(null);
 
-        saveProduct(TEST_PRICE, TEST, category);
-        saveProduct(TEST_PRICE, TEST, category);
-        saveProduct(TEST_PRICE, TEST, category);
-        saveProduct(TEST_PRICE, TEST, category);
+        saveMultipleProducts(category, 4);
 
         List<Product> products = productRepository.findAll(
                 ProductSpecification.hasColorIn(List.of()),
@@ -108,9 +105,7 @@ public class ProductRepositoryTest {
         Category category1 = saveCategory(null);
         Category category2 = saveCategory(null);
 
-        saveProduct(TEST_PRICE, TEST, category1);
-        saveProduct(TEST_PRICE, TEST, category1);
-        saveProduct(TEST_PRICE, TEST, category1);
+        saveMultipleProducts(category1, 3);
         saveProduct(TEST_PRICE, TEST, category2);
 
         List<Product> products = productRepository.findAll(
@@ -127,10 +122,7 @@ public class ProductRepositoryTest {
         Category subCategory = saveCategory(rootCategory);
         Category subSubCategory = saveCategory(subCategory);
 
-        saveProduct(TEST_PRICE, TEST, subSubCategory);
-        saveProduct(TEST_PRICE, TEST, subSubCategory);
-        saveProduct(TEST_PRICE, TEST, subSubCategory);
-        saveProduct(TEST_PRICE, TEST, subSubCategory);
+        saveMultipleProducts(subSubCategory, 4);
 
         List<Product> products = productRepository.findAll(
                 ProductSpecification.hasRootCategoryName(rootCategory.getName()),
@@ -145,10 +137,7 @@ public class ProductRepositoryTest {
     public void productRepository_findAllWithAllSizes_returnsFourProducts() {
         Category category = saveCategory(null);
 
-        saveProduct(TEST_PRICE, TEST, category);
-        saveProduct(TEST_PRICE, TEST, category);
-        saveProduct(TEST_PRICE, TEST, category);
-        saveProduct(TEST_PRICE, TEST, category);
+        saveMultipleProducts(category, 4);
 
         List<Product> products = productRepository.findAll(
                 ProductSpecification.hasSize("all"),
@@ -236,6 +225,12 @@ public class ProductRepositoryTest {
                 .name(ProductRepositoryTest.TEST)
                 .parent(parent)
                 .build());
+    }
+
+    private void saveMultipleProducts(Category category, int count) {
+        for (int i = 0; i < count; i++) {
+            saveProduct(ProductRepositoryTest.TEST_PRICE, ProductRepositoryTest.TEST, category);
+        }
     }
 
     private void saveProduct(double price, String color, Category category) {
