@@ -1,6 +1,8 @@
 package com.familywebshop.stylet.controller;
 
 import com.familywebshop.stylet.dto.ProductDto;
+import com.familywebshop.stylet.exception.CategoryNotFoundException;
+import com.familywebshop.stylet.exception.ProductNotFoundException;
 import com.familywebshop.stylet.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,21 +20,27 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<ProductDto> getProduct(@PathVariable("id") Long id){
-        ProductDto productDto = productService.getProduct(id);
+    public ResponseEntity<?> getProduct(@PathVariable("id") Long id) {
+        try {
+            ProductDto productDto = productService.getProduct(id);
 
-        return new ResponseEntity<>(productDto, HttpStatus.OK);
+            return ResponseEntity.ok(productDto);
+        } catch (ProductNotFoundException productNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(productNotFoundException.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/products")
-    public ResponseEntity<List<ProductDto>> getAllProducts(){
+    public ResponseEntity<?> getAllProducts(){
         try {
             List<ProductDto> products = productService.getAllProducts();
 
-            return new ResponseEntity<>(products, HttpStatus.OK);
-
+            return ResponseEntity.ok(products);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.internalServerError().build();
         }
     }
 
@@ -45,19 +53,17 @@ public class ProductController {
             @RequestParam double maxPrice
     ){
         try {
-            List<ProductDto> products = productService
-                    .getAllProductsByParams(colors, size, sortBy, minPrice, maxPrice);
+            List<ProductDto> products = productService.getAllProductsByParams(colors, size, sortBy, minPrice, maxPrice);
 
-            return new ResponseEntity<>(products, HttpStatus.OK);
-
+            return ResponseEntity.ok(products);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @GetMapping("/products/category/{id}")
-    public ResponseEntity<List<ProductDto>> getProductsByCategoryAndParams(
-            @PathVariable("id") Long id,
+    public ResponseEntity<?> getProductsByCategoryAndParams(
+            @PathVariable("id") Long categoryId,
             @RequestParam List<String> colors,
             @RequestParam String size,
             @RequestParam String sortBy,
@@ -65,18 +71,18 @@ public class ProductController {
             @RequestParam double maxPrice
     ){
         try {
-            List<ProductDto> productDtos = productService
-                    .getProductsByCategoryAndParams(id, colors, size, sortBy, minPrice, maxPrice);
+            List<ProductDto> productDtoList = productService
+                    .getProductsByCategoryAndParams(categoryId, colors, size, sortBy, minPrice, maxPrice);
 
-            return new ResponseEntity<>(productDtos, HttpStatus.OK);
+            return ResponseEntity.ok(productDtoList);
 
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @GetMapping("/products/category/name/male")
-    public ResponseEntity<List<ProductDto>> getAllMaleProductsByParams(
+    public ResponseEntity<?> getAllMaleProductsByParams(
             @RequestParam List<String> colors,
             @RequestParam String size,
             @RequestParam String sortBy,
@@ -84,16 +90,17 @@ public class ProductController {
             @RequestParam double maxPrice
     ){
         try {
-            return new ResponseEntity<>(productService.getAllProductsByRootCategoryName(
-                                    "férfi", colors, size, sortBy, minPrice, maxPrice
-            ), HttpStatus.OK);
+            return ResponseEntity.ok(productService.getAllProductsByRootCategoryName(
+                    "férfi", colors, size, sortBy, minPrice, maxPrice
+                    )
+            );
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @GetMapping("/products/category/name/female")
-    public ResponseEntity<List<ProductDto>> getAllFemaleProductsByParams(
+    public ResponseEntity<?> getAllFemaleProductsByParams(
             @RequestParam List<String> colors,
             @RequestParam String size,
             @RequestParam String sortBy,
@@ -101,16 +108,17 @@ public class ProductController {
             @RequestParam double maxPrice
     ){
         try {
-            return new ResponseEntity<>(productService.getAllProductsByRootCategoryName(
+            return ResponseEntity.ok(productService.getAllProductsByRootCategoryName(
                     "női", colors, size, sortBy, minPrice, maxPrice
-            ),HttpStatus.OK);
+                    )
+            );
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @GetMapping("/products/category/name/children")
-    public ResponseEntity<List<ProductDto>> getAllChildrenProductsByParams(
+    public ResponseEntity<?> getAllChildrenProductsByParams(
             @RequestParam List<String> colors,
             @RequestParam String size,
             @RequestParam String sortBy,
@@ -118,48 +126,91 @@ public class ProductController {
             @RequestParam double maxPrice
     ){
         try {
-            return new ResponseEntity<>(productService.getAllProductsByRootCategoryName(
+            return ResponseEntity.ok(productService.getAllProductsByRootCategoryName(
                     "gyerek", colors, size, sortBy, minPrice, maxPrice
-            ), HttpStatus.OK);
+                    )
+            );
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     //*TODO: INNENTŐL /admin kell majd minden elé!! CSAK ÁTMENETILEG LETT KIVÉVE
     @PostMapping("/products")
-    public ResponseEntity<String> saveProduct(@RequestBody ProductDto productDto) {
-        productService.addProduct(productDto);
+    public ResponseEntity<?> saveProduct(@RequestBody ProductDto productDto) {
+        try {
+            productService.saveProduct(productDto);
 
-        return ResponseEntity.ok("Product successfully added.");
+            return ResponseEntity.ok("Product successfully added.");
+        } catch (IllegalArgumentException illegalArgumentException){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid argument: " + illegalArgumentException.getMessage());
+        } catch (CategoryNotFoundException categoryNotFoundException){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(categoryNotFoundException.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @PostMapping("/products/all")
-    public ResponseEntity<String> saveAllProducts(@RequestBody List<ProductDto> productDtoList) {
-        productService.addAllProducts(productDtoList);
+    public ResponseEntity<?> saveAllProducts(@RequestBody List<ProductDto> productDtoList) {
+        try {
+            productService.saveAllProducts(productDtoList);
 
-        return ResponseEntity.ok("All products successfully added.");
+            return ResponseEntity.ok("All products successfully added.");
+        } catch (IllegalArgumentException illegalArgumentException){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid argument: " + illegalArgumentException.getMessage());
+        } catch (CategoryNotFoundException categoryNotFoundException){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(categoryNotFoundException.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PutMapping("/products/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto) {
+        try {
+            ProductDto updatedProduct = productService.updateProduct(id, productDto);
+
+            return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+        } catch (ProductNotFoundException productNotFoundException){
+            return ResponseEntity.badRequest().body(productNotFoundException.getMessage());
+        } catch (CategoryNotFoundException categoryNotFoundException){
+            return ResponseEntity.badRequest().body(categoryNotFoundException.getMessage());
+        } catch (Exception exception){
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @DeleteMapping("/products/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable("id") Long id) {
-        productService.deleteProduct(id);
+        try {
+            productService.deleteProduct(id);
 
-        return ResponseEntity.ok("Product successfully deleted!");
+            return ResponseEntity.ok("Product successfully deleted!");
+        } catch (ProductNotFoundException productNotFoundException){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(productNotFoundException.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @DeleteMapping("/products")
     public ResponseEntity<?> deleteAllProducts() {
-        productService.deleteAllProducts();
+        try {
+            productService.deleteAllProducts();
 
-        return ResponseEntity.ok("All products successfully deleted!");
-    }
-
-    @PutMapping("/products/{id}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto) {
-        ProductDto updatedProduct = productService.updateProduct(id, productDto);
-
-        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+            return ResponseEntity.ok("All products successfully deleted!");
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
 }

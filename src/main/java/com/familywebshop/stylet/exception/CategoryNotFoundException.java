@@ -5,4 +5,7 @@ public class CategoryNotFoundException extends RuntimeException{
         super(s);
     }
 
+    public CategoryNotFoundException(Long id) {
+        super("Category with ID " + id  + " not found!");
+    }
 }

@@ -5,6 +5,7 @@ import com.familywebshop.stylet.dto.ProductPhotoDto;
 import com.familywebshop.stylet.dto.ProductStockDto;
 import com.familywebshop.stylet.exception.CategoryNotFoundException;
 import com.familywebshop.stylet.exception.ProductNotFoundException;
+import com.familywebshop.stylet.model.Category;
 import com.familywebshop.stylet.model.Product;
 import com.familywebshop.stylet.model.ProductPhoto;
 import com.familywebshop.stylet.model.ProductStock;
@@ -19,7 +20,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,9 +45,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto getProduct(Long id) {
+    public ProductDto getProduct(Long id) throws ProductNotFoundException{
         return mapEntityToDto(productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product does not exist!")));
+                .orElseThrow(() -> new ProductNotFoundException(id)));
+    }
+
+    @Override
+    public List<ProductDto> getAllProducts() {
+        return mapEntityListToDtoList(productRepository.findAll());
     }
 
     @Override
@@ -56,17 +65,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getAllProducts() {
-        return mapEntityListToDtoList(productRepository.findAll());
-    }
-
-    @Override
     public List<ProductDto> getProductsByCategoryAndParams(Long categoryId, List<String> colors, String size, String sortBy, double minPrice, double maxPrice){
         List<Product> productsByCategory = productRepository
-                .findAll(getSpecificationWithCategoryId(
-                                categoryId, colors, getSizeFromParam(size), minPrice, maxPrice
-                        ),
-                        getSortRuleFromParam(sortBy));
+                .findAll(getSpecificationWithCategoryId(categoryId, colors, getSizeFromParam(size), minPrice, maxPrice),
+                        getSortRuleFromParam(sortBy)
+                );
 
         return mapEntityListToDtoList(productsByCategory);
     }
@@ -84,18 +87,42 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void addProduct(ProductDto productDto) {
+    public void saveProduct(ProductDto productDto) throws CategoryNotFoundException{
         productRepository.save(mapDtoToEntity(productDto));
     }
 
     @Override
-    public void addAllProducts(List<ProductDto> productDtoList) {
+    public void saveAllProducts(List<ProductDto> productDtoList) throws CategoryNotFoundException{
         productRepository.saveAll(mapDtoListToEntityList(productDtoList));
     }
 
     @Override
-    public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
+    public ProductDto updateProduct(Long productId, ProductDto productDto) throws ProductNotFoundException, CategoryNotFoundException {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(productId));
+
+        updateFieldIfNotNull(productDto.getName(), product::setName);
+        updateFieldIfNotNull(productDto.getColor(), product::setColor);
+        updateFieldIfNotNull(productDto.getDescription(), product::setDescription);
+        updateFieldIfNotNull(productDto.getMaterials(), product::setMaterials);
+        updateFieldIfNotNull(productDto.getPrice(), product::setPrice);
+        updateCategory(productDto.getCategory(), product);
+
+        updateProductStocks(productDto.getProductStocks(), product);
+        updateProductPhotos(productDto.getProductPhotos(), product);
+
+        productRepository.save(product);
+
+        return productDto;
+    }
+
+    @Override
+    public void deleteProduct(Long id) throws ProductNotFoundException{
+        if (productRepository.existsById(id)) {
+            productRepository.deleteById(id);
+        } else {
+            throw new ProductNotFoundException(id);
+        }
     }
 
     @Override
@@ -103,50 +130,42 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteAll();
     }
 
-    @Override
-    public ProductDto updateProduct(Long productId, ProductDto productDto) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("Product does not exist!"));
-
-        product.setName(productDto.getName());
-        product.setColor(productDto.getColor());
-        product.setDescription(productDto.getDescription());
-        product.setMaterials(productDto.getMaterials());
-        product.setPrice(productDto.getPrice());
-        product.setCategory(
-                categoryRepository.findById(productDto.getCategory())
-                        .orElseThrow(() -> new CategoryNotFoundException(
-                                "Cannot set to product's category, because no such category!"
-                        ))
-        );
-
-        productStockService.updateAll(productDto.getProductStocks(), product);
-        productPhotoService.updateAll(productDto.getProductPhotos(), product);
-
-        productRepository.save(product);
-
-        return productDto;
+    private List<Product> mapDtoListToEntityList(List<ProductDto> productDtoList) throws CategoryNotFoundException{
+        return productDtoList
+                .stream()
+                .map(this::mapDtoToEntity)
+                .collect(Collectors.toList());
     }
 
-    private Product mapDtoToEntity(ProductDto productDto) {
+    private List<ProductDto> mapEntityListToDtoList(List<Product> productList) {
+        return productList
+                .stream()
+                .map(this::mapEntityToDto)
+                .collect(Collectors.toList());
+    }
+
+    private Product mapDtoToEntity(ProductDto productDto) throws CategoryNotFoundException {
         Product product = Product.builder()
                 .name(productDto.getName())
                 .color(productDto.getColor())
                 .price(productDto.getPrice())
                 .description(productDto.getDescription())
                 .materials(productDto.getMaterials())
-                .category(categoryRepository.findById(productDto.getCategory())
-                        .orElseThrow(() -> new CategoryNotFoundException("The products category not found!")))
-                .productStocks(ModelMapper.getInstance()
-                        .mapDtoListToEntityList(productDto.getProductStocks(), ProductStock.class))
-                .productPhotos(ModelMapper.getInstance()
-                        .mapDtoListToEntityList(productDto.getProductPhotos(), ProductPhoto.class))
+                .category(Optional.ofNullable(productDto.getCategory())
+                        .map(categoryId -> categoryRepository.findById(categoryId)
+                                .orElseThrow(() -> new CategoryNotFoundException(categoryId)))
+                        .orElseThrow(() -> new CategoryNotFoundException("Category ID is null")))
+                .productStocks(Optional.ofNullable(productDto.getProductStocks())
+                        .map(productStocks -> ModelMapper.getInstance().mapDtoListToEntityList(productStocks, ProductStock.class))
+                        .orElse(Collections.emptyList()))
+                .productPhotos(Optional.ofNullable(productDto.getProductPhotos())
+                        .map(productPhotos -> ModelMapper.getInstance().mapDtoListToEntityList(productPhotos, ProductPhoto.class))
+                        .orElse(Collections.emptyList()))
                 .build();
 
         createRelationships(product);
 
         return product;
-
     }
 
     private ProductDto mapEntityToDto(Product product) {
@@ -166,26 +185,14 @@ public class ProductServiceImpl implements ProductService {
                 .build();
     }
 
-    private List<ProductDto> mapEntityListToDtoList(List<Product> productList) {
-        return productList
-                .stream()
-                .map(this::mapEntityToDto)
-                .collect(Collectors.toList());
-    }
-
-    private List<Product> mapDtoListToEntityList(List<ProductDto> productDtoList) {
-        return productDtoList
-                .stream()
-                .map(this::mapDtoToEntity)
-                .collect(Collectors.toList());
-    }
-
     private void createRelationships(Product product){
-        for(int i=0; i<product.getProductPhotos().size(); i++) {
-            product.getProductPhotos().get(i).setProduct(product);
-        }
-        for (int i = 0; i<product.getProductStocks().size(); i++){
-            product.getProductStocks().get(i).setProduct(product);
+        if (product.getProductStocks() != null && product.getProductPhotos() != null) {
+            for (int i = 0; i < product.getProductPhotos().size(); i++) {
+                product.getProductPhotos().get(i).setProduct(product);
+            }
+            for (int i = 0; i < product.getProductStocks().size(); i++) {
+                product.getProductStocks().get(i).setProduct(product);
+            }
         }
     }
 
@@ -217,12 +224,38 @@ public class ProductServiceImpl implements ProductService {
     private String getSizeFromParam(String size){
         size = size.toLowerCase();
 
-        if (size.contains("eu")){
+        if (size.contains("eu") && size.split(" ").length>1){
             String[] sizes = size.split(" ");
 
             return sizes[1];
         } else {
             return size;
+        }
+    }
+
+    private <T> void updateFieldIfNotNull(T newValue, Consumer<T> updater) {
+        if (newValue != null) {
+            updater.accept(newValue);
+        }
+    }
+
+    private void updateCategory(Long categoryId, Product product) throws CategoryNotFoundException {
+        if (categoryId != null) {
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+            product.setCategory(category);
+        }
+    }
+
+    private void updateProductStocks(List<ProductStockDto> productStocks, Product product) {
+        if (productStocks != null) {
+            productStockService.updateAll(productStocks, product);
+        }
+    }
+
+    private void updateProductPhotos(List<ProductPhotoDto> productPhotos, Product product) {
+        if (productPhotos != null) {
+            productPhotoService.updateAll(productPhotos, product);
         }
     }
 
