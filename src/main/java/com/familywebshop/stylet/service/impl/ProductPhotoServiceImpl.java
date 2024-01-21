@@ -1,6 +1,7 @@
 package com.familywebshop.stylet.service.impl;
 
 import com.familywebshop.stylet.dto.ProductPhotoDto;
+import com.familywebshop.stylet.model.Product;
 import com.familywebshop.stylet.model.ProductPhoto;
 import com.familywebshop.stylet.repository.ProductPhotoRepository;
 import com.familywebshop.stylet.service.ProductPhotoService;
@@ -18,9 +19,9 @@ public class ProductPhotoServiceImpl implements ProductPhotoService {
     }
 
     @Override
-    public List<ProductPhotoDto> updateAll(List<ProductPhotoDto> productPhotoDtoList){
+    public List<ProductPhotoDto> updateAll(List<ProductPhotoDto> productPhotoDtoList, Product product){
         for (ProductPhotoDto productPhotoDto : productPhotoDtoList){
-            update(productPhotoDto.getId(), productPhotoDto);
+            update(productPhotoDto.getId(), productPhotoDto, product);
         }
 
         return productPhotoDtoList;
@@ -28,16 +29,23 @@ public class ProductPhotoServiceImpl implements ProductPhotoService {
     }
 
     @Override
-    public ProductPhotoDto update(Long id, ProductPhotoDto productPhotoDto){
-        ProductPhoto productPhoto = productPhotoRepository.findById(id)
-                .orElseThrow(); //TODO: ProductPhotoNotFoundException
+    public ProductPhotoDto update(Long id, ProductPhotoDto productPhotoDto, Product product){
+        if (id != null && productPhotoRepository.findById(id).isPresent()) {
+            ProductPhoto productPhoto = productPhotoRepository.findById(id).get();
 
-        productPhoto.setImageUrl(productPhotoDto.getImageUrl());
+            productPhoto.setImageUrl(productPhotoDto.getImageUrl());
+            productPhoto.setProduct(product);
 
-        productPhotoRepository.save(productPhoto);
+            productPhotoRepository.save(productPhoto);
+        } else{
+            productPhotoRepository.save(ProductPhoto.builder()
+                    .imageUrl(productPhotoDto.getImageUrl())
+                    .product(product)
+                    .build()
+            );
+        }
 
         return productPhotoDto;
-
     }
 
 }

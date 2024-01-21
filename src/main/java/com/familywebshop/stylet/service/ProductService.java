@@ -24,4 +24,6 @@ public interface ProductService {
 
     List<ProductDto> getAllProductsByRootCategoryName(String rootCategoryName, List<String> colors, String size, String sortBy, double minPrice, double maxPrice);
 
+    void deleteAllProducts();
+
 }

@@ -131,14 +131,14 @@ public class ProductController {
     public ResponseEntity<String> saveProduct(@RequestBody ProductDto productDto) {
         productService.addProduct(productDto);
 
-        return ResponseEntity.ok("Product added successfully.");
+        return ResponseEntity.ok("Product successfully added.");
     }
 
     @PostMapping("/products/all")
     public ResponseEntity<String> saveAllProducts(@RequestBody List<ProductDto> productDtoList) {
         productService.addAllProducts(productDtoList);
 
-        return ResponseEntity.ok("Products added successfully.");
+        return ResponseEntity.ok("All products successfully added.");
     }
 
     @DeleteMapping("/products/{id}")
@@ -146,6 +146,13 @@ public class ProductController {
         productService.deleteProduct(id);
 
         return ResponseEntity.ok("Product successfully deleted!");
+    }
+
+    @DeleteMapping("/products")
+    public ResponseEntity<?> deleteAllProducts() {
+        productService.deleteAllProducts();
+
+        return ResponseEntity.ok("All products successfully deleted!");
     }
 
     @PutMapping("/products/{id}")

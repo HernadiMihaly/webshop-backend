@@ -51,21 +51,28 @@ public class CategoryController {
     public ResponseEntity<String> saveCategory(@RequestBody CategoryDto categoryDto) {
         categoryService.addCategory(categoryDto);
 
-        return ResponseEntity.ok("Category added successfully.");
+        return ResponseEntity.ok("Category successfully added.");
     }
 
     @PostMapping("/categories/all")
     public ResponseEntity<String> saveAllCategories(@RequestBody List<CategoryDto> categoryDtoList) {
         categoryService.addAllCategories(categoryDtoList);
 
-        return ResponseEntity.ok("Categories added successfully.");
+        return ResponseEntity.ok("All categories successfully added.");
     }
 
     @DeleteMapping("/categories/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable Long id){
         categoryService.deleteCategory(id);
 
-        return ResponseEntity.ok("Category deleted successfully!");
+        return ResponseEntity.ok("Category successfully deleted!");
+    }
+
+    @DeleteMapping("/categories")
+    public ResponseEntity<?> deleteAllCategories(){
+        categoryService.deleteAllCategories();
+
+        return ResponseEntity.ok("All categories successfully deleted!");
     }
 
     @PutMapping("/categories/{id}")

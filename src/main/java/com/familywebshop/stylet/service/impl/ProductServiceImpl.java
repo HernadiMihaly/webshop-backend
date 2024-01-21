@@ -99,6 +99,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public void deleteAllProducts() {
+        productRepository.deleteAll();
+    }
+
+    @Override
     public ProductDto updateProduct(Long productId, ProductDto productDto) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product does not exist!"));
@@ -115,8 +120,8 @@ public class ProductServiceImpl implements ProductService {
                         ))
         );
 
-        productStockService.updateAll(productDto.getProductStocks());
-        productPhotoService.updateAll(productDto.getProductPhotos());
+        productStockService.updateAll(productDto.getProductStocks(), product);
+        productPhotoService.updateAll(productDto.getProductPhotos(), product);
 
         productRepository.save(product);
 

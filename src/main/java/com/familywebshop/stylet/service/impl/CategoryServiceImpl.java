@@ -70,6 +70,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public void deleteAllCategories() {
+        categoryRepository.deleteAll();
+    }
+
+    @Override
     public CategoryDto getCategory(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException("Category does not exist!"));

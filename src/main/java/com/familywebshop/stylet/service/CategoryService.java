@@ -21,4 +21,7 @@ public interface CategoryService {
     CategoryDto getParentCategory(Long id);
 
     void addAllCategories(List<CategoryDto> categoryDto);
+
+    void deleteAllCategories();
+    
 }
