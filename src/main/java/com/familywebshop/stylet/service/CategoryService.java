@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CategoryService {
 
-    void addCategory(CategoryDto categoryDto);
+    void saveCategory(CategoryDto categoryDto);
 
     List<CategoryDto> getAllCategories();
 
@@ -20,7 +20,7 @@ public interface CategoryService {
 
     CategoryDto getParentCategory(Long id);
 
-    void addAllCategories(List<CategoryDto> categoryDto);
+    void saveAllCategories(List<CategoryDto> categoryDto);
 
     void deleteAllCategories();
     

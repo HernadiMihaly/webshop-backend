@@ -5,6 +5,7 @@ import com.familywebshop.stylet.exception.CategoryNotFoundException;
 import com.familywebshop.stylet.model.Category;
 import com.familywebshop.stylet.repository.CategoryRepository;
 import com.familywebshop.stylet.service.CategoryService;
+import com.familywebshop.stylet.util.FieldUpdater;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,18 +17,19 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+    private final FieldUpdater fieldUpdater;
+
+    public CategoryServiceImpl(CategoryRepository categoryRepository, FieldUpdater fieldUpdater) {
         this.categoryRepository = categoryRepository;
+        this.fieldUpdater = fieldUpdater;
     }
 
     @Override
-    public void addCategory(CategoryDto categoryDto) {
-        categoryRepository.save(mapDtoToEntity(categoryDto));
-    }
+    public CategoryDto getCategory(Long id) throws CategoryNotFoundException {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException(id));
 
-    @Override
-    public void addAllCategories(List<CategoryDto> categoryDtoList) {
-        categoryRepository.saveAll(mapDtoListToEntityList(categoryDtoList));
+        return mapEntityToDto(category);
     }
 
     @Override
@@ -36,28 +38,46 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDto> getSubCategories(Long id) {
-        List<Category> categories = categoryRepository.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException("Category does not exist!"))
-                .getSubCategories();
+    public CategoryDto getParentCategory(Long id) throws CategoryNotFoundException {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException(id));
+        Category parentCategory = (category.getParent() != null) ? category.getParent() : null;
 
-        return mapEntityListToDtoList(categories);
+        return (parentCategory != null) ? mapEntityToDto(parentCategory) : null;
     }
 
     @Override
-    public CategoryDto updateCategory(Long id, CategoryDto categoryDto) {
+    public List<CategoryDto> getSubCategories(Long id) throws CategoryNotFoundException {
+        List<Category> subCategories = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException(id))
+                .getSubCategories();
+
+        return mapEntityListToDtoList(subCategories);
+    }
+
+    @Override
+    public void saveCategory(CategoryDto categoryDto) throws CategoryNotFoundException{
+        categoryRepository.save(mapDtoToEntity(categoryDto));
+    }
+
+    @Override
+    public void saveAllCategories(List<CategoryDto> categoryDtoList) throws CategoryNotFoundException{
+        categoryRepository.saveAll(mapDtoListToEntityList(categoryDtoList));
+    }
+
+    @Override
+    public CategoryDto updateCategory(Long id, CategoryDto categoryDto) throws CategoryNotFoundException {
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException("Category does not exist!"));
+                .orElseThrow(() -> new CategoryNotFoundException(id));
 
-        Optional<Category> parentCategory = categoryRepository.findById(categoryDto.getParentId());
+        if (categoryDto.getParentId() != null) {
+            Category parentCategory = categoryRepository.findById(categoryDto.getParentId())
+                    .orElseThrow(() -> new CategoryNotFoundException(categoryDto.getParentId()));
 
-        if (parentCategory.isPresent()){
-            category.setParent(parentCategory.get());
-        } else {
-            category.setParent(null);
+            category.setParent(parentCategory);
         }
 
-        category.setName(categoryDto.getName());
+        fieldUpdater.updateFieldIfNotNull(categoryDto.getName(), category::setName);
 
         categoryRepository.save(category);
 
@@ -65,8 +85,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategory(Long id) {
-        categoryRepository.deleteById(id);
+    public void deleteCategory(Long id) throws CategoryNotFoundException{
+        if (categoryRepository.findById(id).isPresent()) {
+            categoryRepository.deleteById(id);
+        } else {
+            throw new CategoryNotFoundException(id);
+        }
     }
 
     @Override
@@ -74,35 +98,21 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.deleteAll();
     }
 
-    @Override
-    public CategoryDto getCategory(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException("Category does not exist!"));
-
-        return mapEntityToDto(category);
-    }
-
-    @Override
-    public CategoryDto getParentCategory(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException("Category does not exist!"));
-
-        try {
-            Category parentCategory = category.getParent();
-
-            return mapEntityToDto(parentCategory);
-        } catch (Exception e){
-            throw new CategoryNotFoundException("There's no parent of root category: " + id);
-        }
-    }
-
-    private Category mapDtoToEntity(CategoryDto categoryDto) {
+    private Category mapDtoToEntity(CategoryDto categoryDto) throws CategoryNotFoundException{
         return Category.builder()
                 .id(categoryDto.getId())
                 .name(categoryDto.getName())
-                .parent(mapDtoToEntity(categoryDto.getParentId()))
+                .parent(getParent(categoryDto.getParentId()))
                 .build();
+    }
 
+    private Category getParent(Long parentId) throws CategoryNotFoundException {
+        if (parentId == null) {
+            return null;
+        }
+
+        return categoryRepository.findById(parentId)
+                        .orElseThrow(() -> new CategoryNotFoundException(parentId));
     }
 
     private CategoryDto mapEntityToDto(Category category) {
@@ -113,16 +123,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .build();
     }
 
-    private Category mapDtoToEntity(Long parentId) {
-        if (parentId == null) {
-            return null;
-        }
-        Category parentCategory = new Category();
-        parentCategory.setId(parentId);
-        return parentCategory;
-    }
-
-    private List<Category> mapDtoListToEntityList(List<CategoryDto> categoryDtoList) {
+    private List<Category> mapDtoListToEntityList(List<CategoryDto> categoryDtoList) throws CategoryNotFoundException{
         if (categoryDtoList == null) return null;
 
         return categoryDtoList.stream()

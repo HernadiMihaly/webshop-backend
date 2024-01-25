@@ -14,6 +14,7 @@ import com.familywebshop.stylet.repository.ProductRepository;
 import com.familywebshop.stylet.service.ProductPhotoService;
 import com.familywebshop.stylet.service.ProductService;
 import com.familywebshop.stylet.service.ProductStockService;
+import com.familywebshop.stylet.util.FieldUpdater;
 import com.familywebshop.stylet.util.ModelMapper;
 import com.familywebshop.stylet.util.ProductSpecification;
 import org.springframework.data.domain.Sort;
@@ -37,11 +38,14 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductPhotoService productPhotoService;
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, ProductStockService productStockService, ProductPhotoService productPhotoService) {
+    private final FieldUpdater fieldUpdater;
+
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, ProductStockService productStockService, ProductPhotoService productPhotoService, FieldUpdater fieldUpdater) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.productStockService = productStockService;
         this.productPhotoService = productPhotoService;
+        this.fieldUpdater = fieldUpdater;
     }
 
     @Override
@@ -101,11 +105,11 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(productId));
 
-        updateFieldIfNotNull(productDto.getName(), product::setName);
-        updateFieldIfNotNull(productDto.getColor(), product::setColor);
-        updateFieldIfNotNull(productDto.getDescription(), product::setDescription);
-        updateFieldIfNotNull(productDto.getMaterials(), product::setMaterials);
-        updateFieldIfNotNull(productDto.getPrice(), product::setPrice);
+        fieldUpdater.updateFieldIfNotNull(productDto.getName(), product::setName);
+        fieldUpdater.updateFieldIfNotNull(productDto.getColor(), product::setColor);
+        fieldUpdater.updateFieldIfNotNull(productDto.getDescription(), product::setDescription);
+        fieldUpdater.updateFieldIfNotNull(productDto.getMaterials(), product::setMaterials);
+        fieldUpdater.updateFieldIfNotNull(productDto.getPrice(), product::setPrice);
         updateCategory(productDto.getCategory(), product);
 
         updateProductStocks(productDto.getProductStocks(), product);
@@ -113,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
 
         productRepository.save(product);
 
-        return productDto;
+        return mapEntityToDto(product);
     }
 
     @Override
@@ -230,12 +234,6 @@ public class ProductServiceImpl implements ProductService {
             return sizes[1];
         } else {
             return size;
-        }
-    }
-
-    private <T> void updateFieldIfNotNull(T newValue, Consumer<T> updater) {
-        if (newValue != null) {
-            updater.accept(newValue);
         }
     }
 
