@@ -23,7 +23,7 @@ public class CategoryController {
         try {
             CategoryDto categoryDto = categoryService.getCategory(id);
 
-            return new ResponseEntity<>(categoryDto, HttpStatus.OK);
+            return ResponseEntity.ok(categoryDto);
         } catch (CategoryNotFoundException categoryNotFoundException){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(categoryNotFoundException.getMessage());
@@ -35,7 +35,7 @@ public class CategoryController {
     @GetMapping("/categories")
     public ResponseEntity<?> getAllCategories(){
         try {
-            return new ResponseEntity<>(categoryService.getAllCategories(), HttpStatus.OK);
+            return ResponseEntity.ok(categoryService.getAllCategories());
         } catch (Exception e){
             return ResponseEntity.internalServerError().build();
         }
@@ -46,7 +46,7 @@ public class CategoryController {
         try {
             CategoryDto categoryDto = categoryService.getParentCategory(id);
 
-            return new ResponseEntity<>(categoryDto, HttpStatus.OK);
+            return ResponseEntity.ok(categoryDto);
         } catch (CategoryNotFoundException categoryNotFoundException){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(categoryNotFoundException.getMessage());
@@ -60,7 +60,7 @@ public class CategoryController {
         try {
             List<CategoryDto> subCategories = categoryService.getSubCategories(id);
 
-            return new ResponseEntity<>(subCategories, HttpStatus.OK);
+            return ResponseEntity.ok(subCategories);
         } catch (CategoryNotFoundException categoryNotFoundException){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(categoryNotFoundException.getMessage());
@@ -111,7 +111,7 @@ public class CategoryController {
     @PutMapping("/categories/{id}")
     public ResponseEntity<?> updateCategory(@PathVariable Long id, @RequestBody CategoryDto categoryDto) {
         try {
-            return new ResponseEntity<>(categoryService.updateCategory(id, categoryDto), HttpStatus.OK);
+            return ResponseEntity.ok(categoryService.updateCategory(id, categoryDto));
         } catch (IllegalArgumentException illegalArgumentException){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Invalid argument: " + illegalArgumentException.getMessage());
