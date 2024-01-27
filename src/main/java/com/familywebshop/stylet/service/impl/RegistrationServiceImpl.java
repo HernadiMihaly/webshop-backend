@@ -23,20 +23,20 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
-    public void register(RequestUserDto requestUserDTO) {
-        if (EmailValidator.getInstance().isValid(requestUserDTO.getEmail())) {
+    public void register(RequestUserDto requestUserDTO) throws IllegalArgumentException{
             userService.signUp(requestUserDTO);
-        } else throw new IllegalStateException("Email is not valid!");
     }
 
     @Override
-    public void subscribe(SubscribedUserDto subscribedUserDto) {
+    public void subscribe(SubscribedUserDto subscribedUserDto) throws IllegalStateException{
         if (EmailValidator.getInstance().isValid(subscribedUserDto.getEmail())) {
             subscribedUserRepository.save(
                     ModelMapper.getInstance()
                             .mapDtoToEntity(subscribedUserDto, SubscribedUser.class)
             );
-        } else throw new IllegalStateException("Email is not valid!");
+        } else {
+            throw new IllegalArgumentException("Email is not valid!");
+        }
     }
 
 }

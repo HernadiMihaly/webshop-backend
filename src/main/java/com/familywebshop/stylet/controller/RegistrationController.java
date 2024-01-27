@@ -3,17 +3,14 @@ package com.familywebshop.stylet.controller;
 import com.familywebshop.stylet.dto.RequestUserDto;
 import com.familywebshop.stylet.dto.SubscribedUserDto;
 import com.familywebshop.stylet.service.RegistrationService;
+import org.hibernate.PropertyValueException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping(path = "/identity")
 public class RegistrationController {
 
     private final RegistrationService registrationService;
@@ -22,32 +19,44 @@ public class RegistrationController {
         this.registrationService = registrationService;
     }
 
-    @PostMapping(path = "/identity/register")
+    @PostMapping(path = "/register")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> register(@RequestBody RequestUserDto requestUserDTO){
-        registrationService.register(requestUserDTO);
-        return ResponseEntity.ok("User successfully registered!");
+        try {
+            registrationService.register(requestUserDTO);
+
+            return ResponseEntity.ok("User successfully registered!");
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            if (dataIntegrityViolationException.getMessage().contains("Duplicate entry")){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("User already registered!");
+            }
+
+            return ResponseEntity.badRequest().body("Property cannot be null!");
+        } catch (IllegalArgumentException illegalArgumentException){
+            return ResponseEntity.badRequest().body(illegalArgumentException.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
-    @PostMapping(path = "/identity/subscribe")
+    @PostMapping(path = "/subscribe")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> subscribe(@RequestBody SubscribedUserDto subscribedUserDto){
         try {
             registrationService.subscribe(subscribedUserDto);
 
-            return new ResponseEntity<>(HttpStatus.OK);
-
-        } catch (Exception e){
-            if (e.getMessage().contains("Duplicate entry")){
-
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
-
+            return ResponseEntity.ok("User successfully subscribed!");
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            if (dataIntegrityViolationException.getMessage().contains("Duplicate entry")){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("User already subscribed!");
             }
 
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
+            return ResponseEntity.badRequest().body("Property cannot be null!");
+        } catch (IllegalArgumentException illegalArgumentException){
+            return ResponseEntity.badRequest().body(illegalArgumentException.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().build();
         }
-
     }
 
 }

@@ -5,7 +5,9 @@ import com.familywebshop.stylet.model.Role;
 import com.familywebshop.stylet.model.User;
 import com.familywebshop.stylet.repository.UserRepository;
 import com.familywebshop.stylet.service.UserService;
+import com.familywebshop.stylet.util.CustomValidator;
 import com.familywebshop.stylet.util.ModelMapper;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +17,17 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private final CustomValidator customValidator;
+
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, CustomValidator customValidator) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.customValidator = customValidator;
     }
 
-    public void signUp(RequestUserDto requestUserDTO) {
+    public void signUp(RequestUserDto requestUserDTO) throws IllegalArgumentException {
+        customValidator.validateUserData(requestUserDTO);
+
         requestUserDTO.setPassword(passwordEncoder.encode(requestUserDTO.getPassword()));
 
         User user = ModelMapper.getInstance()
