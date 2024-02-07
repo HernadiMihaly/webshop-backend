@@ -1,30 +1,36 @@
 package com.familywebshop.stylet.service.impl;
 
+import com.familywebshop.stylet.dto.AuthenticationResponse;
 import com.familywebshop.stylet.dto.RequestUserDto;
 import com.familywebshop.stylet.dto.SubscribedUserDto;
 import com.familywebshop.stylet.model.SubscribedUser;
+import com.familywebshop.stylet.model.User;
 import com.familywebshop.stylet.repository.SubscribedUserRepository;
+import com.familywebshop.stylet.service.JwtService;
 import com.familywebshop.stylet.service.RegistrationService;
 import com.familywebshop.stylet.service.UserService;
 import com.familywebshop.stylet.util.ModelMapper;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class RegistrationServiceImpl implements RegistrationService {
 
     private final UserService userService;
 
     private final SubscribedUserRepository subscribedUserRepository;
 
-    public RegistrationServiceImpl(UserService userService, SubscribedUserRepository subscribedUserRepository) {
-        this.userService = userService;
-        this.subscribedUserRepository = subscribedUserRepository;
-    }
+    private final JwtService jwtService;
 
     @Override
-    public void register(RequestUserDto requestUserDTO) throws IllegalArgumentException{
-            userService.signUp(requestUserDTO);
+    public AuthenticationResponse register(RequestUserDto requestUserDTO) throws IllegalArgumentException{
+            User user = userService.signUp(requestUserDTO);
+
+            return AuthenticationResponse.builder()
+                    .token(jwtService.generateToken(user))
+                    .build();
     }
 
     @Override
@@ -38,5 +44,4 @@ public class RegistrationServiceImpl implements RegistrationService {
             throw new IllegalArgumentException("Email is not valid!");
         }
     }
-
 }
