@@ -1,8 +1,9 @@
 package com.familywebshop.stylet.exception;
 
-public class ProductNotFoundException extends RuntimeException {
+import lombok.NoArgsConstructor;
 
-    public ProductNotFoundException() {}
+@NoArgsConstructor
+public class ProductNotFoundException extends RuntimeException {
 
     public ProductNotFoundException(String message) {
         super(message);
@@ -11,5 +12,4 @@ public class ProductNotFoundException extends RuntimeException {
     public ProductNotFoundException(Long id) {
         super("Product with ID " + id + " not found!");
     }
-
 }

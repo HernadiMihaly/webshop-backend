@@ -16,5 +16,4 @@ public class ResponseUserDto {
     private String firstName;
 
     private String lastName;
-
 }

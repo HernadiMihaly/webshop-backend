@@ -32,5 +32,4 @@ public class ProductDto {
     private List<ProductPhotoDto> productPhotos;
 
     private List<ProductStockDto> productStocks;
-
 }

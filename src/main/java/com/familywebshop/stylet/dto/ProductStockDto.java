@@ -14,5 +14,4 @@ public class ProductStockDto {
     private String size;
 
     private Long quantity;
-
 }

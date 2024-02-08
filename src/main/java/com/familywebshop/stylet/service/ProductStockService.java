@@ -11,5 +11,4 @@ public interface ProductStockService {
     ProductStockDto update(Long id, ProductStockDto productStockDto, Product product);
 
     List<ProductStockDto> updateAll(List<ProductStockDto> productStockDtoList, Product product);
-
 }

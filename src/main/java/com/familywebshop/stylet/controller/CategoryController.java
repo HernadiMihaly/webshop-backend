@@ -3,6 +3,7 @@ package com.familywebshop.stylet.controller;
 import com.familywebshop.stylet.dto.CategoryDto;
 import com.familywebshop.stylet.exception.CategoryNotFoundException;
 import com.familywebshop.stylet.service.CategoryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,13 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;
-
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
 
     @GetMapping("/categories/{id}")
     public ResponseEntity<?> getCategory(@PathVariable Long id){
@@ -149,5 +147,4 @@ public class CategoryController {
             return ResponseEntity.internalServerError().build();
         }
     }
-
 }

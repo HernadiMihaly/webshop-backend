@@ -10,5 +10,4 @@ public interface ProductPhotoService {
     ProductPhotoDto update(Long id, ProductPhotoDto productPhotoDto, Product product);
 
     List<ProductPhotoDto> updateAll(List<ProductPhotoDto> productPhotoDtoList, Product product);
-
 }

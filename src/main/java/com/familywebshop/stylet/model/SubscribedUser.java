@@ -1,14 +1,13 @@
 package com.familywebshop.stylet.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Entity
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Table(name = "subscribed_users")
 public class SubscribedUser {
 
@@ -18,5 +17,4 @@ public class SubscribedUser {
 
     @Column(unique = true,  nullable = false)
     private String email;
-
 }

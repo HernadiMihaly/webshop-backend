@@ -18,5 +18,4 @@ public class RequestUserDto {
     private String lastName;
 
     private String password;
-
 }

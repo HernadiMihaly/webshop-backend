@@ -1,5 +1,8 @@
 package com.familywebshop.stylet.exception;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class CategoryNotFoundException extends RuntimeException{
     public CategoryNotFoundException(String s) {
         super(s);

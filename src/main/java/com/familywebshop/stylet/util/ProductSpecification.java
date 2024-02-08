@@ -72,5 +72,4 @@ public class ProductSpecification {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.between(root.get("price"), minPrice, maxPrice);
     }
-
 }

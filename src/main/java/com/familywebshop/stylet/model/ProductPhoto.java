@@ -23,5 +23,4 @@ public class ProductPhoto {
     @JoinColumn(name = "product_id")
     @JsonIgnore
     private Product product;
-
 }

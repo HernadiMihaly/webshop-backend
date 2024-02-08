@@ -6,6 +6,7 @@ import com.familywebshop.stylet.model.Category;
 import com.familywebshop.stylet.repository.CategoryRepository;
 import com.familywebshop.stylet.service.CategoryService;
 import com.familywebshop.stylet.util.FieldUpdater;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,16 +14,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
 
     private final FieldUpdater fieldUpdater;
-
-    public CategoryServiceImpl(CategoryRepository categoryRepository, FieldUpdater fieldUpdater) {
-        this.categoryRepository = categoryRepository;
-        this.fieldUpdater = fieldUpdater;
-    }
 
     @Override
     public CategoryDto getCategory(Long id) throws CategoryNotFoundException {
@@ -136,5 +133,4 @@ public class CategoryServiceImpl implements CategoryService {
                 .map(this::mapEntityToDto)
                 .collect(Collectors.toList());
     }
-
 }

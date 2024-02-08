@@ -17,6 +17,7 @@ import com.familywebshop.stylet.service.ProductStockService;
 import com.familywebshop.stylet.util.FieldUpdater;
 import com.familywebshop.stylet.util.ModelMapper;
 import com.familywebshop.stylet.util.ProductSpecification;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
@@ -39,14 +41,6 @@ public class ProductServiceImpl implements ProductService {
     private final ProductPhotoService productPhotoService;
 
     private final FieldUpdater fieldUpdater;
-
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, ProductStockService productStockService, ProductPhotoService productPhotoService, FieldUpdater fieldUpdater) {
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-        this.productStockService = productStockService;
-        this.productPhotoService = productPhotoService;
-        this.fieldUpdater = fieldUpdater;
-    }
 
     @Override
     public ProductDto getProduct(Long id) throws ProductNotFoundException{
@@ -256,5 +250,4 @@ public class ProductServiceImpl implements ProductService {
             productPhotoService.updateAll(productPhotos, product);
         }
     }
-
 }

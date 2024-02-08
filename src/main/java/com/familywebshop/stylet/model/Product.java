@@ -53,5 +53,4 @@ public class Product {
     void onPrePersist() {
         createdAt = new java.util.Date();
     }
-
 }

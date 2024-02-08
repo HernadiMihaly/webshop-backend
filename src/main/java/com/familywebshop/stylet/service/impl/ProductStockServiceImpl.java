@@ -5,18 +5,16 @@ import com.familywebshop.stylet.model.Product;
 import com.familywebshop.stylet.model.ProductStock;
 import com.familywebshop.stylet.repository.ProductStockRepository;
 import com.familywebshop.stylet.service.ProductStockService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProductStockServiceImpl implements ProductStockService {
 
     private final ProductStockRepository productStockRepository;
-
-    public ProductStockServiceImpl(ProductStockRepository productStockRepository) {
-        this.productStockRepository = productStockRepository;
-    }
 
     @Override
     public List<ProductStockDto> updateAll(List<ProductStockDto> productStockDtoList, Product product){

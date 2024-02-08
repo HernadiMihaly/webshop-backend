@@ -47,5 +47,4 @@ public class ProductPhotoServiceImpl implements ProductPhotoService {
 
         return productPhotoDto;
     }
-
 }
