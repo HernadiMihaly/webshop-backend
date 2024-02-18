@@ -2,6 +2,7 @@ package com.familywebshop.stylet.controller;
 
 import com.familywebshop.stylet.dto.RequestUserDto;
 import com.familywebshop.stylet.dto.SubscribedUserDto;
+import com.familywebshop.stylet.service.ConfirmationTokenService;
 import com.familywebshop.stylet.service.RegistrationService;
 import com.familywebshop.stylet.service.impl.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -68,5 +69,10 @@ public class UserController {
         } catch (Exception e){
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    @GetMapping(path = "/registration/confirm")
+    public String confirm(@RequestParam("token") String token) {
+        return registrationService.confirmToken(token);
     }
 }

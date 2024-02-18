@@ -9,4 +9,6 @@ public interface RegistrationService {
     AuthenticationResponse register(RequestUserDto requestUserDTO);
 
     void subscribe(SubscribedUserDto subscribedUserDto);
+
+    String confirmToken(String token);
 }
