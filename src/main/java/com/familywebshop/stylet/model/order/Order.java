@@ -27,28 +27,36 @@ public class Order {
     @Column(nullable = false)
     private LocalDateTime orderDate;
 
+    @Column(nullable = false)
     private String orderNumber;
 
+    @Column(nullable = false)
     private String status;
 
+    @Column(nullable = false)
     private Long totalPrice;
 
     private String discountCoupon;
 
+    @Column(nullable = false)
     private String customerName;
 
+    @Column(nullable = false)
     private String customerEmail;
 
+    @Column(nullable = false)
     private String customerPhoneNumber;
 
+    @Column(nullable = false)
     private String shippingAddress;
 
-    private String billingAddress;
-
+    @Column(nullable = false)
     private String deliveryCompany;
 
+    @Column(nullable = false)
     private String deliveryMethod;
 
+    @Column(nullable = false)
     private String paymentMethod;
 
     private String trackingNumber;

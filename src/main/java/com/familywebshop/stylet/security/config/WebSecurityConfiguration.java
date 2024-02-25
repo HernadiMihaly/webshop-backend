@@ -47,7 +47,9 @@ public class WebSecurityConfiguration {
                             auth.requestMatchers("/",
                                             "/identity/**",
                                             "/products/**",
-                                            "/categories/**").permitAll()
+                                            "/categories/**",
+                                            "/order")
+                                    .permitAll()
                                     .requestMatchers("/user/**").hasRole("USER")
                                     .requestMatchers("/admin/**").hasRole("ADMIN")
                                     .anyRequest().authenticated();
