@@ -1,8 +1,8 @@
 package com.familywebshop.stylet.util;
 
-import com.familywebshop.stylet.model.Category;
-import com.familywebshop.stylet.model.Product;
-import com.familywebshop.stylet.model.ProductStock;
+import com.familywebshop.stylet.model.product.Category;
+import com.familywebshop.stylet.model.product.Product;
+import com.familywebshop.stylet.model.product.ProductStock;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;

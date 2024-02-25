@@ -1,6 +1,6 @@
 package com.familywebshop.stylet.security.config;
 
-import com.familywebshop.stylet.repository.UserRepository;
+import com.familywebshop.stylet.repository.user.UserRepository;
 import com.familywebshop.stylet.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

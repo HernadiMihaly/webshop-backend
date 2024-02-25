@@ -1,7 +1,7 @@
 package com.familywebshop.stylet.security;
 
-import com.familywebshop.stylet.model.User;
-import com.familywebshop.stylet.repository.UserRepository;
+import com.familywebshop.stylet.model.user.User;
+import com.familywebshop.stylet.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

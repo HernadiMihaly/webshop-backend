@@ -1,6 +1,6 @@
 package com.familywebshop.stylet.util;
 
-import com.familywebshop.stylet.dto.RequestUserDto;
+import com.familywebshop.stylet.dto.user.RequestUserDto;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.stereotype.Component;
 

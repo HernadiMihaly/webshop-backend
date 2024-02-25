@@ -1,8 +1,11 @@
 package com.familywebshop.stylet.repository;
 
-import com.familywebshop.stylet.model.Category;
-import com.familywebshop.stylet.model.Product;
-import com.familywebshop.stylet.model.ProductStock;
+import com.familywebshop.stylet.model.product.Category;
+import com.familywebshop.stylet.model.product.Product;
+import com.familywebshop.stylet.model.product.ProductStock;
+import com.familywebshop.stylet.repository.product.CategoryRepository;
+import com.familywebshop.stylet.repository.product.ProductRepository;
+import com.familywebshop.stylet.repository.product.ProductStockRepository;
 import com.familywebshop.stylet.util.ProductSpecification;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
