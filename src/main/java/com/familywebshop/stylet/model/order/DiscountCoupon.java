@@ -20,6 +20,5 @@ public class DiscountCoupon {
     @Column(nullable = false, unique = true)
     private String coupon;
 
-    @Column(nullable = false)
     private Boolean isValid = false;
 }

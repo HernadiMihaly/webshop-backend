@@ -27,32 +27,39 @@ public class DiscountCouponServiceImpl implements DiscountCouponService {
     }
 
     @Override
-    public DiscountCoupon addCoupon(DiscountCoupon coupon) {
+    public DiscountCoupon saveCoupon(DiscountCoupon coupon) {
         return discountCouponRepository.save(coupon);
     }
 
     @Override
-    public void deleteCoupon(Long id) {
-        discountCouponRepository.deleteById(id);
+    public void deleteCoupon(Long id) throws DiscountCouponNotFoundException {
+        DiscountCoupon coupon = discountCouponRepository.findById(id)
+                .orElseThrow(() -> new DiscountCouponNotFoundException(id));
+
+        discountCouponRepository.deleteById(coupon.getId());
     }
 
     @Override
-    public void activateCoupon(Long id) {
+    public DiscountCoupon activateCoupon(Long id) throws DiscountCouponNotFoundException {
         DiscountCoupon coupon = discountCouponRepository.findById(id)
                 .orElseThrow(() -> new DiscountCouponNotFoundException(id));
 
         coupon.setIsValid(true);
 
         discountCouponRepository.save(coupon);
+
+        return coupon;
     }
 
     @Override
-    public void deactivateCoupon(Long id) {
+    public DiscountCoupon deactivateCoupon(Long id) throws DiscountCouponNotFoundException {
         DiscountCoupon coupon = discountCouponRepository.findById(id)
                 .orElseThrow(() -> new DiscountCouponNotFoundException(id));
 
         coupon.setIsValid(false);
 
         discountCouponRepository.save(coupon);
+
+        return coupon;
     }
 }

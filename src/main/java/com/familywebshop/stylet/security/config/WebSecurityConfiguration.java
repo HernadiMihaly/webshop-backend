@@ -48,6 +48,7 @@ public class WebSecurityConfiguration {
                                             "/identity/**",
                                             "/products/**",
                                             "/categories/**",
+                                            "/coupon/**",
                                             "/order")
                                     .permitAll()
                                     .requestMatchers("/user/**").hasRole("USER")

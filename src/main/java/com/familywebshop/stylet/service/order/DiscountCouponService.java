@@ -10,11 +10,11 @@ public interface DiscountCouponService {
 
     DiscountCoupon getCouponById(Long id);
 
-    DiscountCoupon addCoupon(DiscountCoupon coupon);
+    DiscountCoupon saveCoupon(DiscountCoupon coupon);
 
     void deleteCoupon(Long id);
 
-    void activateCoupon(Long id);
+    DiscountCoupon activateCoupon(Long id);
 
-    void deactivateCoupon(Long id);
+    DiscountCoupon deactivateCoupon(Long id);
 }
