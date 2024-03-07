@@ -4,6 +4,8 @@ import com.familywebshop.stylet.dto.product.ProductDto;
 import com.familywebshop.stylet.dto.product.ProductPhotoDto;
 import com.familywebshop.stylet.dto.product.ProductStockDto;
 import com.familywebshop.stylet.exception.CategoryNotFoundException;
+import com.familywebshop.stylet.exception.InsufficientQuantityException;
+import com.familywebshop.stylet.exception.NoStockForSizeException;
 import com.familywebshop.stylet.exception.ProductNotFoundException;
 import com.familywebshop.stylet.model.product.Category;
 import com.familywebshop.stylet.model.product.Product;
@@ -125,6 +127,31 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteAllProducts() {
         productRepository.deleteAll();
+    }
+
+    @Override
+    public void reduceQuantity(Product product, String size, int orderedQuantity)
+            throws InsufficientQuantityException, NoStockForSizeException, ProductNotFoundException {
+        Long productId = product.getId();
+        product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(productId));
+
+        Optional<ProductStock> optionalProductStock = product.getProductStocks().stream()
+                .filter(p -> p.getSize().equals(size))
+                .findFirst();
+
+        if (optionalProductStock.isPresent()) {
+            ProductStock concreteStock = optionalProductStock.get();
+            long availableQuantity = concreteStock.getQuantity();
+
+            if (orderedQuantity <= availableQuantity) {
+                concreteStock.setQuantity(availableQuantity - orderedQuantity);
+            } else {
+                throw new InsufficientQuantityException("Ordered quantity exceeds available stock!");
+            }
+        } else {
+            throw new NoStockForSizeException("No stock available for the specified size!");
+        }
     }
 
     private List<Product> mapDtoListToEntityList(List<ProductDto> productDtoList) throws CategoryNotFoundException{

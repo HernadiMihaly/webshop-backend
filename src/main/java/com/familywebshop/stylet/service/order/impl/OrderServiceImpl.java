@@ -7,6 +7,7 @@ import com.familywebshop.stylet.model.order.OrderItem;
 import com.familywebshop.stylet.repository.order.OrderItemRepository;
 import com.familywebshop.stylet.repository.order.OrderRepository;
 import com.familywebshop.stylet.service.order.OrderService;
+import com.familywebshop.stylet.service.product.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,8 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderItemRepository orderItemRepository;
 
+    private final ProductService productService;
+
     @Override
     @Transactional
     public void saveOrder(OrderRequestDto orderRequestDto) throws OrderNotFoundException {
@@ -32,12 +35,14 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.save(order);
 
-        //Save order details (items)
+        //Save order details (items) & reduce quantity of ordered items
         List<OrderItem> orderItemList = orderRequestDto.getOrderItemList();
 
         for (OrderItem orderItem : orderItemList){
             orderItem.setOrder(order);
+
             orderItemRepository.save(orderItem);
+            productService.reduceQuantity(orderItem.getProduct(), orderItem.getSize(), orderItem.getQuantity());
         }
     }
 

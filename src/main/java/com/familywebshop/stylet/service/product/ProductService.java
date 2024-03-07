@@ -1,6 +1,7 @@
 package com.familywebshop.stylet.service.product;
 
 import com.familywebshop.stylet.dto.product.ProductDto;
+import com.familywebshop.stylet.model.product.Product;
 
 import java.util.List;
 
@@ -25,4 +26,6 @@ public interface ProductService {
     void deleteProduct(Long id);
 
     void deleteAllProducts();
+
+    void reduceQuantity(Product product, String size, int quantity);
 }
