@@ -25,13 +25,12 @@ public class Order {
     private User user;
 
     @Column(nullable = false)
-    private LocalDateTime orderDate;
+    private LocalDateTime orderDate = LocalDateTime.now();
+
+    private String orderNumber = "";
 
     @Column(nullable = false)
-    private String orderNumber;
-
-    @Column(nullable = false)
-    private String status;
+    private String status = "NEW";
 
     @Column(nullable = false)
     private Long totalPrice;
