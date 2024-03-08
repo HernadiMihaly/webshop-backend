@@ -18,7 +18,10 @@ public class DiscountCoupon {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String coupon;
+    private String name;
+
+    @Column(nullable = false)
+    private Integer percentage;
 
     private Boolean isValid = false;
 }

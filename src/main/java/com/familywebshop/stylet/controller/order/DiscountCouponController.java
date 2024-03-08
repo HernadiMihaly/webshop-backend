@@ -1,5 +1,6 @@
 package com.familywebshop.stylet.controller.order;
 
+import com.familywebshop.stylet.dto.order.CouponValidationRequestDto;
 import com.familywebshop.stylet.model.order.DiscountCoupon;
 import com.familywebshop.stylet.service.order.DiscountCouponService;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,11 @@ public class DiscountCouponController {
     @PostMapping("/coupons/{id}/deactivate")
     public ResponseEntity<?> deactivateCoupon(@PathVariable Long id) {
         return ResponseEntity.ok(discountCouponService.deactivateCoupon(id));
+    }
+
+    @PostMapping("/coupons/validate")
+    public ResponseEntity<?> validateCoupon(@RequestBody CouponValidationRequestDto couponRequest) {
+        return ResponseEntity.ok(discountCouponService.validateCoupon(couponRequest));
     }
 
     @DeleteMapping("/coupons/{id}")

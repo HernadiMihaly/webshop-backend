@@ -1,5 +1,6 @@
 package com.familywebshop.stylet.service.order.impl;
 
+import com.familywebshop.stylet.dto.order.CouponValidationRequestDto;
 import com.familywebshop.stylet.exception.DiscountCouponNotFoundException;
 import com.familywebshop.stylet.model.order.DiscountCoupon;
 import com.familywebshop.stylet.repository.order.DiscountCouponRepository;
@@ -61,5 +62,17 @@ public class DiscountCouponServiceImpl implements DiscountCouponService {
         discountCouponRepository.save(coupon);
 
         return coupon;
+    }
+
+    @Override
+    public Double validateCoupon(CouponValidationRequestDto couponRequest) throws DiscountCouponNotFoundException{
+       if (discountCouponRepository.findByName(couponRequest.getName()).isPresent() &&
+               discountCouponRepository.findByName(couponRequest.getName()).get().getIsValid()){
+           double percentage = (double) discountCouponRepository.findByName(couponRequest.getName()).get().getPercentage() /100;
+
+           return (double) Math.round(couponRequest.getPrice() * (1-percentage));
+       } else {
+           throw new DiscountCouponNotFoundException("Discount coupon: " + couponRequest.getName() + " not found!");
+       }
     }
 }
