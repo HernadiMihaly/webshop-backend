@@ -1,7 +1,10 @@
 package com.familywebshop.stylet.service.order.impl;
 
+import com.familywebshop.stylet.dto.order.OrderDto;
+import com.familywebshop.stylet.dto.order.OrderItemDto;
 import com.familywebshop.stylet.dto.order.OrderRequestDto;
 import com.familywebshop.stylet.exception.OrderNotFoundException;
+import com.familywebshop.stylet.exception.ProductNotFoundException;
 import com.familywebshop.stylet.model.order.Order;
 import com.familywebshop.stylet.model.order.OrderItem;
 import com.familywebshop.stylet.repository.order.OrderItemRepository;
@@ -12,6 +15,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -27,23 +32,52 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void saveOrder(OrderRequestDto orderRequestDto) throws OrderNotFoundException {
+    public void saveOrder(OrderDto orderDto) throws OrderNotFoundException {
         //Save order with generated order number
-        Order order = orderRepository.save(orderRequestDto.getOrder());
-
+        Order order = orderRepository.save(mapOrderDtoToEntity(orderDto));
         order.setOrderNumber(generateOrderNumber(order.getId()));
+        Order orderWithOrderNumber = orderRepository.save(order);
 
-        orderRepository.save(order);
+        saveOrderItems(orderDto.getOrderItemDtoList(), orderWithOrderNumber);
+    }
 
-        //Save order details (items) & reduce quantity of ordered items
-        List<OrderItem> orderItemList = orderRequestDto.getOrderItemList();
+    private Order mapOrderDtoToEntity(OrderDto orderDto){
+        return Order.builder()
+                .orderItemList(Collections.emptyList())
+                .orderDate(LocalDateTime.now())
+                .orderNumber("In progress")
+                .status("NEW")
+                .totalPrice(orderDto.getTotalPrice())
+                .discountCoupon(orderDto.getDiscountCoupon())
+                .customerName(orderDto.getCustomerName())
+                .customerEmail(orderDto.getCustomerEmail())
+                .customerPhoneNumber(orderDto.getCustomerPhoneNumber())
+                .shippingAddress(orderDto.getShippingAddress())
+                .deliveryCompany(orderDto.getDeliveryCompany())
+                .deliveryMethod(orderDto.getDeliveryMethod())
+                .paymentMethod(orderDto.getPaymentMethod())
+                .trackingNumber("In progress")
+                .build();
+    }
+    private void saveOrderItems(List<OrderItemDto> orderItemDtoList, Order order) {
+        List<OrderItem> orderItemList = orderItemDtoList.stream()
+                .map(orderItemDto -> mapOrderItemDtoToEntity(orderItemDto, order))
+                .toList();
 
-        for (OrderItem orderItem : orderItemList){
-            orderItem.setOrder(order);
-
+        orderItemList.forEach(orderItem -> {
             orderItemRepository.save(orderItem);
             productService.reduceQuantity(orderItem.getProduct(), orderItem.getSize(), orderItem.getQuantity());
-        }
+        });
+    }
+
+    private OrderItem mapOrderItemDtoToEntity(OrderItemDto orderItemDto, Order order) throws ProductNotFoundException {
+        return OrderItem.builder()
+                .order(order)
+                .product(productService.findProductById(orderItemDto.getProductId()))
+                .size(orderItemDto.getSize())
+                .quantity(orderItemDto.getQuantity())
+                .price(orderItemDto.getPrice())
+                .build();
     }
 
     private String generateOrderNumber(Long orderId){

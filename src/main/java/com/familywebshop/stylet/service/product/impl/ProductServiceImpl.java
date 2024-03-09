@@ -154,6 +154,12 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    @Override
+    public Product findProductById(Long id) throws ProductNotFoundException {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
+    }
+
     private List<Product> mapDtoListToEntityList(List<ProductDto> productDtoList) throws CategoryNotFoundException{
         return productDtoList
                 .stream()
