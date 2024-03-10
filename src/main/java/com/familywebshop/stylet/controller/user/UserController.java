@@ -61,13 +61,7 @@ public class UserController {
     @PostMapping(path = "/login")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> login(@RequestBody RequestUserDto requestUserDTO){
-        try {
-            return ResponseEntity.ok(authService.authenticate(requestUserDTO));
-        } catch (UsernameNotFoundException usernameNotFoundException){
-            return ResponseEntity.notFound().build();
-        } catch (Exception e){
-            return ResponseEntity.internalServerError().build();
-        }
+        return ResponseEntity.ok(authService.authenticate(requestUserDTO));
     }
 
     @GetMapping(path = "/registration/confirm")
